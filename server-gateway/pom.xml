@@ -8,45 +8,17 @@
         <version>1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <description>网关,所有请求都需要通过网关后再分发的相应的微服务</description>
 
-    <packaging>pom</packaging>
-    <modules>
-        <module>service-product</module>
-    </modules>
-    <artifactId>service</artifactId>
+    <artifactId>server-gateway</artifactId>
 
     <dependencies>
-        <!--依赖服务的工具类-->
-        <dependency>
-            <groupId>com.atguigu.gmall</groupId>
-            <artifactId>service-util</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <!--数据载体-->
-        <dependency>
-            <groupId>com.atguigu.gmall</groupId>
-            <artifactId>model</artifactId>
-            <version>1.0</version>
-        </dependency>
 
-        <!--web 需要启动项目-->
+        <!-- 网关spring-cloud-starter-gateway -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
-
-        <!--mybatis-plus-->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-        </dependency>
-
-        <!--mysql-->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-
         <!-- 服务注册 -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -82,8 +54,8 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-zipkin</artifactId>
         </dependency>
-
     </dependencies>
+
 
 
 </project>
