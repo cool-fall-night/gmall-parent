@@ -10,6 +10,7 @@ import com.atguigu.gmall.product.service.BaseCategory3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
  */
 
 @RestController
+@RequestMapping("/admin/product")
 public class CategoryController {
 
     @Autowired
@@ -38,7 +40,7 @@ public class CategoryController {
      * 请求头：/admin/product/getCategory1
      * @return：JSON字符串封装对象
      */
-    @GetMapping("/admin/product/getCategory1")
+    @GetMapping("/getCategory1")
     public Result getCategory1(){
 
         List<BaseCategory1> list = baseCategory1Service.list();
@@ -52,7 +54,7 @@ public class CategoryController {
      * 请求头：/admin/product/getCategory2/{category1Id}
      * @return：JSON字符串封装对象
      */
-    @GetMapping("/admin/product/getCategory2/{category1Id}")
+    @GetMapping("/getCategory2/{category1Id}")
     public Result getCategory2(@PathVariable long category1Id){
 
         List<BaseCategory2> category2s = baseCategory2Service.getCategory1Child(category1Id);
@@ -66,7 +68,7 @@ public class CategoryController {
      * 请求头：/admin/product/getCategory3/{category2Id}
      * @return：JSON字符串封装对象
      */
-    @GetMapping("/admin/product/getCategory3/{category2Id}")
+    @GetMapping("/getCategory3/{category2Id}")
     public Result getCategory3(@PathVariable long category2Id){
 
         List<BaseCategory3> category3s = baseCategory3Service.getCategory2Child(category2Id);
