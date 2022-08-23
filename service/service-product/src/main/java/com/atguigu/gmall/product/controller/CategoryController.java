@@ -21,6 +21,8 @@ import java.util.List;
  * 22:01
  * @version 1.0
  * @since JDK1.8
+ *
+ * 分类相关接口
  */
 
 @RestController
@@ -51,7 +53,7 @@ public class CategoryController {
     /**
      * 根据一级分类ID查询所有的二级分类
      * GET请求
-     * 请求头：/admin/product/getCategory2/{category1Id}
+     * 请求：/admin/product/getCategory2/{category1Id}
      * @return：JSON字符串封装对象
      */
     @GetMapping("/getCategory2/{category1Id}")
@@ -65,7 +67,7 @@ public class CategoryController {
     /**
      * 根据二级分类ID查询所有的三级分类
      * GET请求
-     * 请求头：/admin/product/getCategory3/{category2Id}
+     * 请求：/admin/product/getCategory3/{category2Id}
      * @return：JSON字符串封装对象
      */
     @GetMapping("/getCategory3/{category2Id}")
