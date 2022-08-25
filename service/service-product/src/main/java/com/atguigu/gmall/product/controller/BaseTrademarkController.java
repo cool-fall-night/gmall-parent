@@ -3,10 +3,15 @@ package com.atguigu.gmall.product.controller;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.BaseAttrInfo;
 import com.atguigu.gmall.model.product.BaseTrademark;
+import com.atguigu.gmall.model.product.SpuInfo;
 import com.atguigu.gmall.product.service.BaseTrademarkService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author 毛伟臣
@@ -95,6 +100,21 @@ public class BaseTrademarkController {
 
         BaseTrademark baseTrademark = baseTrademarkService.getById(id);
         return Result.ok(baseTrademark);
+
+    }
+
+    /**
+     * 获取品牌属性
+     * GET请求
+     * 请求头：/admin/product/baseTrademark/getTrademarkList
+     */
+    @ApiOperation(value = "获取品牌属性")
+    @GetMapping("/getTrademarkList")
+    public Result baseSaleAttrList(){
+
+        List<BaseTrademark> list = baseTrademarkService.list();
+
+        return Result.ok(list);
 
     }
 }

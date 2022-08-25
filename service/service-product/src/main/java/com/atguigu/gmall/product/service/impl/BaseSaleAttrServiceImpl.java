@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class BaseSaleAttrServiceImpl extends ServiceImpl<BaseSaleAttrMapper, BaseSaleAttr>
     implements BaseSaleAttrService {
 
+
 }
 
 
