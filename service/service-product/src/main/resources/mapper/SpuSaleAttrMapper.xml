@@ -29,7 +29,17 @@
                sv.`sale_attr_value_name`
         FROM spu_sale_attr sa
                  LEFT JOIN spu_sale_attr_value sv ON sa.`spu_id` = sv.`spu_id` and sa.base_sale_attr_id = sv.base_sale_attr_id
-        WHERE sa.spu_id = #{spuId}
+        WHERE sa.spu_id = #{spuId} order by sa.id,sv.id
 
+    </select>
+    <select id="spuSaleAttrMarkList" resultType="com.atguigu.gmall.model.product.SpuSaleAttr">
+        SELECT sa.*,
+               sv.id vid,
+               sv.`sale_attr_value_name`,
+               IF(kv.sale_attr_value_id IS NULL,'0','1') AS is_checked
+        FROM spu_sale_attr sa
+                 LEFT JOIN spu_sale_attr_value sv ON sa.`spu_id` = sv.`spu_id` and sa.base_sale_attr_id = sv.base_sale_attr_id
+                 LEFT JOIN sku_sale_attr_value kv ON sv.id = kv.sale_attr_value_id and kv.sku_id = #{skuId}
+        WHERE sa.spu_id = #{spuId} order by sa.id,sv.id
     </select>
 </mapper>

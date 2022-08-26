@@ -15,6 +15,8 @@ public interface SpuSaleAttrMapper extends BaseMapper<SpuSaleAttr> {
 
 
     List<SpuSaleAttr> spuSaleAttrList(Long spuId);
+
+    List<SpuSaleAttr> spuSaleAttrMarkList(Long spuId, Long skuId);
 }
 
 

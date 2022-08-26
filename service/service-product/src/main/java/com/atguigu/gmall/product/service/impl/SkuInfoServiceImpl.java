@@ -1,18 +1,16 @@
 package com.atguigu.gmall.product.service.impl;
 
-import com.atguigu.gmall.model.product.SkuAttrValue;
-import com.atguigu.gmall.model.product.SkuImage;
-import com.atguigu.gmall.model.product.SkuInfo;
-import com.atguigu.gmall.model.product.SkuSaleAttrValue;
+import com.atguigu.gmall.model.product.*;
+import com.atguigu.gmall.model.to.CategoryViewTo;
+import com.atguigu.gmall.model.to.SkuDetailTo;
+import com.atguigu.gmall.product.mapper.BaseCategory3Mapper;
 import com.atguigu.gmall.product.mapper.SkuInfoMapper;
-import com.atguigu.gmall.product.service.SkuAttrValueService;
-import com.atguigu.gmall.product.service.SkuImageService;
-import com.atguigu.gmall.product.service.SkuInfoService;
-import com.atguigu.gmall.product.service.SkuSaleAttrValueService;
+import com.atguigu.gmall.product.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -32,6 +30,10 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
     private SkuAttrValueService skuAttrValueService;
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;
+    @Autowired
+    private BaseCategory3Mapper baseCategory3Mapper;
+    @Autowired
+    private SpuSaleAttrService spuSaleAttrService;
 
     @Override
     public void saveSkuInfo(SkuInfo skuInfo) {
@@ -66,7 +68,6 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
 
         skuInfoMapper.updateIsSale(skuId,1);
 
-        //TODO 从ES中删除商品
     }
 
     @Override
@@ -74,7 +75,38 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
 
         skuInfoMapper.updateIsSale(skuId,0);
 
-        //TODO 从ES中保存商品
+    }
+
+
+    @Override
+    public SkuDetailTo getSkuDetailTo(Long skuId) {
+
+        SkuDetailTo skuDetailTo = new SkuDetailTo();
+        //1、商品sku完整的分类信息
+        CategoryViewTo categoryViewTo =baseCategory3Mapper.getCategoryView(skuId);
+        skuDetailTo.setCategoryView(categoryViewTo);
+        //2、商品sku的基本信息
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        //2.1、商品skuInfo中的skuImageList
+        List<SkuImage> skuImageList = skuImageService.getSkuImages(skuId);
+        skuInfo.setSkuImageList(skuImageList);
+        //2.4、商品实时价格
+        skuDetailTo.setPrice(this.get1010Price(skuId));
+        //2.2、商品skuInfo中的skuAttrValueList
+        List<SpuSaleAttr> list = spuSaleAttrService.spuSaleAttrList(skuInfo.getSpuId());
+        //TODO 高亮标记异常
+//        List<SpuSaleAttr> list = spuSaleAttrService.spuSaleAttrMarkList(skuInfo.getSpuId(),skuId);
+        skuDetailTo.setSpuSaleAttrList(list);
+        //2.3、商品skuInfo中的skuSaleAttrValueList
+
+        skuDetailTo.setSkuInfo(skuInfo);
+
+        return skuDetailTo;
+    }
+
+    @Override
+    public BigDecimal get1010Price(Long skuId) {
+        return skuInfoMapper.get1010Price(skuId);
     }
 }
 

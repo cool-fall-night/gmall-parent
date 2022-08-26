@@ -13,4 +13,28 @@
     <sql id="Base_Column_List">
         id,name,category2_id
     </sql>
+
+    <resultMap id="getCategoryViewTo" type="com.atguigu.gmall.model.to.CategoryViewTo">
+        <id column="id" property="category1Id"/>
+        <result column="name" property="category1Name"/>
+        <result column="cid" property="category2Id"/>
+        <result column="cname" property="category2Name"/>
+        <result column="gid" property="category3Id"/>
+        <result column="gname" property="category3Name"/>
+    </resultMap>
+
+    <select id="getCategoryView" resultMap="getCategoryViewTo">
+        SELECT bc1.`id`,
+               bc1.`name`,
+               bc2.`id` cid,
+               bc2.`name` cname,
+               bc2.`category1_id`,
+               bc3.`id` gid,
+               bc3.`name` gname,
+               bc3.`category2_id`
+        FROM base_category1 bc1
+                 LEFT JOIN base_category2 bc2 ON bc1.`id`=bc2.`category1_id`
+                 LEFT JOIN base_category3 bc3 ON bc2.`id`=bc3.`category2_id`
+        WHERE bc3.`id`= #{skuId}
+    </select>
 </mapper>

@@ -5,12 +5,39 @@
 <mapper namespace="com.atguigu.gmall.product.mapper.BaseCategory2Mapper">
 
     <resultMap id="BaseResultMap" type="com.atguigu.gmall.model.product.BaseCategory2">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="category1Id" column="category1_id" jdbcType="BIGINT"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="category1Id" column="category1_id" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,name,category1_id
     </sql>
+
+    <resultMap id="getAllCategoryWithTree" type="com.atguigu.gmall.model.to.CategoryTreeTo" >
+        <id column="id" property="categoryId"/>
+        <result column="name" property="categoryName"/>
+        <collection property="categoryChild" ofType="com.atguigu.gmall.model.to.CategoryTreeTo" >
+            <id column="cid" property="categoryId"/>
+            <result column="cname" property="categoryName"/>
+            <collection property="categoryChild" ofType="com.atguigu.gmall.model.to.CategoryTreeTo" >
+                <id column="gid" property="categoryId"/>
+                <result column="gname" property="categoryName"/>
+            </collection>
+        </collection>
+
+    </resultMap>
+
+    <select id="getAllCategoryWithTree" resultMap="getAllCategoryWithTree">
+        SELECT bc1.*,
+               bc2.`id`   cid,
+               bc2.`name` cname,
+               bc2.`category1_id`,
+               bc3.`id`   gid,
+               bc3.`name` gname,
+               bc3.`category2_id`
+        FROM base_category1 bc1
+                 LEFT JOIN base_category2 bc2 ON bc1.`id` = bc2.`category1_id`
+                 LEFT JOIN base_category3 bc3 ON bc2.`id` = bc3.`category2_id`
+    </select>
 </mapper>

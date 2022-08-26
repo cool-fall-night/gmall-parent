@@ -14,4 +14,5 @@ public interface SpuSaleAttrService extends IService<SpuSaleAttr> {
 
     List<SpuSaleAttr> spuSaleAttrList(Long spuId);
 
+    List<SpuSaleAttr> spuSaleAttrMarkList(Long spuId, Long skuId);
 }
