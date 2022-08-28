@@ -1,8 +1,11 @@
 package com.atguigu.gmall.item;
 
+import com.atguigu.gmall.common.annotation.EnableThreadPool;
+import com.atguigu.gmall.common.config.threadPool.AppThreadPoolAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author 毛伟臣
@@ -12,6 +15,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @since JDK1.8
  */
 
+@EnableThreadPool
 @SpringCloudApplication
 @EnableFeignClients
 public class ItemMainApplication {

@@ -1,10 +1,12 @@
 package com.atguigu.gmall.product.service;
 
+import com.atguigu.gmall.model.product.SkuImage;
 import com.atguigu.gmall.model.product.SkuInfo;
 import com.atguigu.gmall.model.to.SkuDetailTo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
 * @author 毛伟臣
@@ -21,5 +23,26 @@ public interface SkuInfoService extends IService<SkuInfo> {
 
     SkuDetailTo getSkuDetailTo(Long skuId);
 
-    BigDecimal get1010Price(Long skuId);
+
+    /**
+     * 查询sku基本信息
+     * @param skuId
+     * @return
+     */
+    SkuInfo getSkuInfo(Long skuId);
+
+    /**
+     * 查询sku图片信息
+     * @param skuId
+     * @return
+     */
+    List<SkuImage> getSkuImages(Long skuId);
+
+    /**
+     * 查询sku实时价格
+     * @param skuId
+     * @return
+     */
+    BigDecimal getSkuPrice(Long skuId);
+
 }

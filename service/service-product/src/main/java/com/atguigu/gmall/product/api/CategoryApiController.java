@@ -36,7 +36,7 @@ public class CategoryApiController {
     /**
      * 查询所有菜单并将结果封装为tree
      */
-    @ApiOperation("查询所有菜单并将结果封装为tree")
+    @ApiOperation(value = "查询所有菜单并将结果封装为tree")
     @GetMapping("/category/tree")
     public Result getAllCategoryWithTree(){
 

@@ -5,15 +5,30 @@ server:
 spring:
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-
   #配置链路追踪的地址
   zipkin:
     base-url: http://192.168.6.66:9411/
     sender:
       type: web
+  redis:
+    host: 192.168.6.66
+    port: 6379
+    password: MWc123456
 
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 #自定义配置
+app:
+  thread-pool:
+    core: 4
+    max: 8
+    queue-size: 2000
+    keep-alive-time: 300 #单位秒
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#线程池监控端口

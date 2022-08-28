@@ -1,4 +1,4 @@
-package com.atguigu.gmall.item.controller.api;
+package com.atguigu.gmall.item.api;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.item.service.SkuDetailService;
@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @since JDK1.8
  */
 
-@RequestMapping("/api/inner/rpc/item")
+
 @RestController
+@RequestMapping("/api/inner/rpc/item")
 public class SkuDetailApiController {
 
     @Autowired
@@ -32,3 +33,4 @@ public class SkuDetailApiController {
         return Result.ok(skuDetailTo);
     }
 }
+

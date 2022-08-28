@@ -1,6 +1,7 @@
 package com.atguigu.gmall.product.service;
 
 import com.atguigu.gmall.model.product.SpuSaleAttr;
+import com.atguigu.gmall.model.to.ValueSkuJsonTo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface SpuSaleAttrService extends IService<SpuSaleAttr> {
     List<SpuSaleAttr> spuSaleAttrList(Long spuId);
 
     List<SpuSaleAttr> spuSaleAttrMarkList(Long spuId, Long skuId);
+
+    String getAllSkuSaleAttrValueJson(Long spuId);
 }
