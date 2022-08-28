@@ -27,13 +27,12 @@ public class SpuSaleAttrServiceImpl extends ServiceImpl<SpuSaleAttrMapper, SpuSa
     @Override
     public List<SpuSaleAttr> spuSaleAttrList(Long spuId) {
 
-        List<SpuSaleAttr> list = spuSaleAttrMapper.spuSaleAttrList(spuId);
-
-        return list;
+        return spuSaleAttrMapper.spuSaleAttrList(spuId);
     }
 
     @Override
     public List<SpuSaleAttr> spuSaleAttrMarkList(Long spuId, Long skuId) {
+
         return spuSaleAttrMapper.spuSaleAttrMarkList(spuId, skuId);
     }
 }

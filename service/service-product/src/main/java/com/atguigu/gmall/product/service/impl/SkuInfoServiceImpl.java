@@ -93,9 +93,9 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
         //2.4、商品实时价格
         skuDetailTo.setPrice(this.get1010Price(skuId));
         //2.2、商品skuInfo中的skuAttrValueList
-        List<SpuSaleAttr> list = spuSaleAttrService.spuSaleAttrList(skuInfo.getSpuId());
+//        List<SpuSaleAttr> list = spuSaleAttrService.spuSaleAttrList(skuInfo.getSpuId());
         //TODO 高亮标记异常
-//        List<SpuSaleAttr> list = spuSaleAttrService.spuSaleAttrMarkList(skuInfo.getSpuId(),skuId);
+        List<SpuSaleAttr> list = spuSaleAttrService.spuSaleAttrMarkList(skuInfo.getSpuId(),skuId);
         skuDetailTo.setSpuSaleAttrList(list);
         //2.3、商品skuInfo中的skuSaleAttrValueList
 

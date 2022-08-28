@@ -32,7 +32,7 @@
         WHERE sa.spu_id = #{spuId} order by sa.id,sv.id
 
     </select>
-    <select id="spuSaleAttrMarkList" resultType="com.atguigu.gmall.model.product.SpuSaleAttr">
+    <select id="spuSaleAttrMarkList" resultMap="SpuSaleAttr">
         SELECT sa.*,
                sv.id vid,
                sv.`sale_attr_value_name`,
