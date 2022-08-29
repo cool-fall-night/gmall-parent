@@ -48,9 +48,9 @@ public class AppThreadPoolAutoConfiguration {
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue(appThreadPoolProperties.getQueueSize()),
                 new ThreadFactory() {
+                    int i = 0;
                     @Override
                     public Thread newThread(Runnable r) {
-                        int i = 0;
                         Thread thread = new Thread(r);
                         thread.setName(applicationName + "core-thread-[" + i++ + "]");
                         return thread;

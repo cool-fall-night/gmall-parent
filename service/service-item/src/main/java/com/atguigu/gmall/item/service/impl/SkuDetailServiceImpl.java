@@ -1,6 +1,7 @@
 package com.atguigu.gmall.item.service.impl;
 
 import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.common.util.Jsons;
 import com.atguigu.gmall.item.feign.SkuDetailFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.product.SkuImage;
@@ -9,14 +10,16 @@ import com.atguigu.gmall.model.product.SpuSaleAttr;
 import com.atguigu.gmall.model.to.CategoryViewTo;
 import com.atguigu.gmall.model.to.SkuDetailTo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 毛伟臣
@@ -35,16 +38,17 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     @Autowired
     ThreadPoolExecutor executor;
 
-    @Override
-    public SkuDetailTo getSkuDetailTo(@PathVariable Long skuId){
+    @Autowired
+    StringRedisTemplate redisTemplate;
+
+    public SkuDetailTo getSkuDetailFromRpc(@PathVariable Long skuId)  {
 
         SkuDetailTo detailTo = new SkuDetailTo();
 
         //1、查基本信息
         CompletableFuture<SkuInfo> skuInfoFuture = CompletableFuture.supplyAsync(() -> {
             Result<SkuInfo> result = skuDetailFeignClient.getSkuInfo(skuId);
-            SkuInfo skuInfo = result.getData();
-            return skuInfo;
+            return result.getData();
         }, executor);
 
 
@@ -87,5 +91,30 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
         return detailTo;
 
+    }
+
+
+    @Override
+    public SkuDetailTo getSkuDetailTo(Long skuId) {
+
+        String jsonStr = redisTemplate.opsForValue().get("sku:info:" + skuId);
+
+        if (StringUtils.isEmpty(jsonStr)){
+            //redis中没有对应的值
+            SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);
+            //回源:将对象转化为Json存入redis中(空值缓存)
+            String cacheJson = "x";
+            if (fromRpc != null){
+                cacheJson = Jsons.toJsonStr(fromRpc);
+                redisTemplate.opsForValue().set("sku:info:" + skuId, cacheJson,7, TimeUnit.DAYS);
+            }else{
+                redisTemplate.opsForValue().set("sku:info:" + skuId, cacheJson,30, TimeUnit.MINUTES);
+            }
+            return fromRpc;
+        }
+        //redis中有
+        SkuDetailTo detailTo = Jsons.toObj(jsonStr,SkuDetailTo.class);
+
+        return detailTo;
     }
 }
