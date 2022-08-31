@@ -37,5 +37,17 @@ public class RedisConst {
     //用户锁定时间 单位：秒
     public static final int SECKILL__TIMEOUT = 60 * 60 * 1;
 
+    public static final String NULL_VAL = "x";
+
+    public static final String LOCK_SKU_DETAIL = "lock:sku:detail:";
+
+    public static final Long NULL_VAL_TTL = 60 * 30L;
+
+    public static final Long SKU_DETAIL_TTL = 7 * 24 * 60 * 60L;
+
+    public static final String SKU_INFO_PREFIX = "sku:info:";
+
+    public static final String BLOOM_SKUID = "bloom:skuid:";
+
 
 }

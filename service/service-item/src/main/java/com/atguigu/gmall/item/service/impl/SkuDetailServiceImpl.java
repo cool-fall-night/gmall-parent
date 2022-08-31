@@ -1,7 +1,9 @@
 package com.atguigu.gmall.item.service.impl;
 
+import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.common.util.Jsons;
+import com.atguigu.gmall.item.cache.CacheOpsService;
 import com.atguigu.gmall.item.feign.SkuDetailFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.product.SkuImage;
@@ -20,6 +22,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import static org.reflections.Reflections.log;
 
 /**
  * @author 毛伟臣
@@ -41,7 +45,10 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     @Autowired
     StringRedisTemplate redisTemplate;
 
-    public SkuDetailTo getSkuDetailFromRpc(@PathVariable Long skuId)  {
+    @Autowired
+    CacheOpsService cacheOpsService;
+
+    public SkuDetailTo getSkuDetailFromRpc(@PathVariable Long skuId) {
 
         SkuDetailTo detailTo = new SkuDetailTo();
 
@@ -54,9 +61,11 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
         //2、查商品图片信息
         CompletableFuture<Void> imagesFuture = skuInfoFuture.thenAcceptAsync(skuInfo -> {
-            Result<List<SkuImage>> skuImages = skuDetailFeignClient.getSkuImages(skuId);
-            skuInfo.setSkuImageList(skuImages.getData());
-            detailTo.setSkuInfo(skuInfo);
+            if (skuInfo != null) {
+                Result<List<SkuImage>> skuImages = skuDetailFeignClient.getSkuImages(skuId);
+                skuInfo.setSkuImageList(skuImages.getData());
+                detailTo.setSkuInfo(skuInfo);
+            }
         }, executor);
 
 
@@ -69,52 +78,100 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
         //4、查销售属性名值
         CompletableFuture<Void> saleAttrFuture = skuInfoFuture.thenAcceptAsync(skuInfo -> {
-            Result<List<SpuSaleAttr>> spuSaleAttrValues = skuDetailFeignClient.getSpuSaleAttrValues(skuId, skuInfo.getSpuId());
-            detailTo.setSpuSaleAttrList(spuSaleAttrValues.getData());
+            if (skuInfo != null) {
+                Result<List<SpuSaleAttr>> spuSaleAttrValues = skuDetailFeignClient.getSpuSaleAttrValues(skuId, skuInfo.getSpuId());
+                detailTo.setSpuSaleAttrList(spuSaleAttrValues.getData());
+            }
         }, executor);
 
 
         //5、查sku组合
         CompletableFuture<Void> saleAttrValueJsonFuture = skuInfoFuture.thenAcceptAsync(skuInfo -> {
-            Result<String> allSkuSaleAttrValueJson = skuDetailFeignClient.getAllSkuSaleAttrValueJson(skuInfo.getSpuId());
-            detailTo.setValuesSkuJson(allSkuSaleAttrValueJson.getData());
+            if (skuInfo != null) {
+                Result<String> allSkuSaleAttrValueJson = skuDetailFeignClient.getAllSkuSaleAttrValueJson(skuInfo.getSpuId());
+                detailTo.setValuesSkuJson(allSkuSaleAttrValueJson.getData());
+            }
         }, executor);
 
 
         //6、查商品分类
         CompletableFuture<Void> categoryViewFuture = skuInfoFuture.thenAcceptAsync(skuInfo -> {
-            Result<CategoryViewTo> categoryView = skuDetailFeignClient.getCategoryView(skuInfo.getCategory3Id());
-            detailTo.setCategoryView(categoryView.getData());
+            if (skuInfo != null) {
+                Result<CategoryViewTo> categoryView = skuDetailFeignClient.getCategoryView(skuInfo.getCategory3Id());
+                detailTo.setCategoryView(categoryView.getData());
+            }
         }, executor);
 
-        CompletableFuture.allOf(imagesFuture,priceFuture,saleAttrFuture,saleAttrValueJsonFuture,categoryViewFuture).join();
+        CompletableFuture.allOf(imagesFuture, priceFuture, saleAttrFuture, saleAttrValueJsonFuture, categoryViewFuture).join();
 
         return detailTo;
 
     }
 
+    @Deprecated
+//    @Override
+    public SkuDetailTo getSkuDetailToV1(Long skuId) {
 
-    @Override
-    public SkuDetailTo getSkuDetailTo(Long skuId) {
+        String jsonStr = redisTemplate.opsForValue().get(RedisConst.SKU_INFO_PREFIX + skuId);
 
-        String jsonStr = redisTemplate.opsForValue().get("sku:info:" + skuId);
-
-        if (StringUtils.isEmpty(jsonStr)){
+        if (StringUtils.isEmpty(jsonStr)) {
             //redis中没有对应的值
             SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);
             //回源:将对象转化为Json存入redis中(空值缓存)
             String cacheJson = "x";
-            if (fromRpc != null){
+            if (fromRpc != null) {
                 cacheJson = Jsons.toJsonStr(fromRpc);
-                redisTemplate.opsForValue().set("sku:info:" + skuId, cacheJson,7, TimeUnit.DAYS);
-            }else{
-                redisTemplate.opsForValue().set("sku:info:" + skuId, cacheJson,30, TimeUnit.MINUTES);
+                redisTemplate.opsForValue().set(RedisConst.SKU_INFO_PREFIX + skuId, cacheJson, 7, TimeUnit.DAYS);
+            } else {
+                redisTemplate.opsForValue().set(RedisConst.SKU_INFO_PREFIX + skuId, cacheJson, 30, TimeUnit.MINUTES);
             }
             return fromRpc;
         }
         //redis中有
-        SkuDetailTo detailTo = Jsons.toObj(jsonStr,SkuDetailTo.class);
+        SkuDetailTo detailTo = Jsons.toObj(jsonStr, SkuDetailTo.class);
 
         return detailTo;
     }
+
+    @Override
+    public SkuDetailTo getSkuDetailTo(Long skuId) {
+
+        String cacheKey = RedisConst.SKU_INFO_PREFIX + skuId;
+        //1、先查缓存
+        SkuDetailTo cacheData = cacheOpsService.getCacheData(cacheKey, SkuDetailTo.class);
+        //2、判断缓存中是否存在
+        if (cacheData == null) {
+            //3、缓存中没有
+            //4、询问布隆，该商品是否存在
+            Boolean contain = cacheOpsService.bloomContains(skuId);
+            if (!contain) {
+                //5、布隆说没有，则确认没有该商品
+                log.info("[{}]商品 - 布隆判定为无，检测到隐藏的攻击风险");
+                return null;
+            }
+        }
+        //6、布隆说有，则可能有该商品，回源查数据
+        Boolean lock = cacheOpsService.tryLock(skuId);
+        //为当前商品添加自己的分布式锁
+        if (lock) {
+            //7、获取锁成功，查询数据库
+            log.info("[{}]商品 - 布隆判定为有，回源查数据");
+            SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);
+            //8、数据存入缓存
+            cacheOpsService.saveData(cacheKey, fromRpc);
+            //9、解锁
+            cacheOpsService.unLock(skuId);
+            return fromRpc;
+        }
+        //10、没获取到锁
+        try {
+            Thread.sleep(1000);
+            return cacheOpsService.getCacheData(cacheKey, SkuDetailTo.class);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
+
