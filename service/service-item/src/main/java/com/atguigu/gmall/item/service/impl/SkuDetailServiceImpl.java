@@ -1,9 +1,8 @@
 package com.atguigu.gmall.item.service.impl;
 
-import com.atguigu.gmall.common.constant.RedisConst;
+
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.common.util.Jsons;
-import com.atguigu.gmall.item.cache.CacheOpsService;
 import com.atguigu.gmall.item.feign.SkuDetailFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.product.SkuImage;
@@ -11,6 +10,9 @@ import com.atguigu.gmall.model.product.SkuInfo;
 import com.atguigu.gmall.model.product.SpuSaleAttr;
 import com.atguigu.gmall.model.to.CategoryViewTo;
 import com.atguigu.gmall.model.to.SkuDetailTo;
+import com.atguigu.starter.cache.annotation.GmallCache;
+import com.atguigu.starter.cache.constant.RedisConst;
+import com.atguigu.starter.cache.service.CacheOpsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -47,6 +49,25 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
     @Autowired
     CacheOpsService cacheOpsService;
+
+    /**
+     * 使用自定义注解、AOP切面自动对方法加上缓存
+     *
+     * @param skuId
+     * @return
+     */
+    @Override
+    @GmallCache(
+            cacheKey = RedisConst.SKU_INFO_PREFIX + "#{#params[0]}",
+            bloomName = RedisConst.BLOOM_SKUID,
+            bloomValue = "#{#params[0]}",
+            lockName = RedisConst.LOCK_SKU_DETAIL + "#{#params[0]}")
+    public SkuDetailTo getSkuDetailTo(Long skuId) {
+
+        SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);
+
+        return fromRpc;
+    }
 
     public SkuDetailTo getSkuDetailFromRpc(@PathVariable Long skuId) {
 
@@ -108,8 +129,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
     }
 
+
     @Deprecated
-//    @Override
     public SkuDetailTo getSkuDetailToV1(Long skuId) {
 
         String jsonStr = redisTemplate.opsForValue().get(RedisConst.SKU_INFO_PREFIX + skuId);
@@ -133,8 +154,15 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         return detailTo;
     }
 
-    @Override
-    public SkuDetailTo getSkuDetailTo(Long skuId) {
+    /**
+     * 手写版加入缓存
+     * WithCache
+     *
+     * @param skuId
+     * @return
+     */
+    @Deprecated
+    public SkuDetailTo getSkuDetailToV2(Long skuId) {
 
         String cacheKey = RedisConst.SKU_INFO_PREFIX + skuId;
         //1、先查缓存
@@ -172,6 +200,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         }
         return null;
     }
+
 
 }
 

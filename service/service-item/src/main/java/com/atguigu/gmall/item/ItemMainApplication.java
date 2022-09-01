@@ -6,6 +6,7 @@ import com.atguigu.gmall.common.config.threadPool.AppThreadPoolAutoConfiguration
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Import;
  * @since JDK1.8
  */
 
+@EnableAspectJAutoProxy     //开启AspectJ的自动代理功能
 @Import(RedissonAutoConfiguration.class)
 @EnableThreadPool
 @SpringCloudApplication
