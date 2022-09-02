@@ -3,7 +3,7 @@ package com.atguigu.gmall.item.service.impl;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.common.util.Jsons;
-import com.atguigu.gmall.item.feign.SkuDetailFeignClient;
+import com.atguigu.gmall.feign.product.SkuDetailFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.product.SkuImage;
 import com.atguigu.gmall.model.product.SkuInfo;
@@ -61,7 +61,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
             cacheKey = RedisConst.SKU_INFO_PREFIX + "#{#params[0]}",
             bloomName = RedisConst.BLOOM_SKUID,
             bloomValue = "#{#params[0]}",
-            lockName = RedisConst.LOCK_SKU_DETAIL + "#{#params[0]}")
+            lockName = RedisConst.LOCK_SKU_DETAIL + "#{#params[0]}",
+            dataTtl = 60 * 60 * 24 * 7L)
     public SkuDetailTo getSkuDetailTo(Long skuId) {
 
         SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);

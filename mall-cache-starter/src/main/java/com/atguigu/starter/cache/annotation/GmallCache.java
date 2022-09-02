@@ -26,4 +26,6 @@ public @interface GmallCache {
 
     String lockName() default "";
 
+    long dataTtl() default 60 * 30L;
+
 }

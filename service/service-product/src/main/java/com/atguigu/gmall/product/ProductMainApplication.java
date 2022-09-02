@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @since JDK1.8
  */
 
+
 @EnableScheduling
 @Import({Swagger2Config.class, RedissonAutoConfiguration.class})
 @MapperScan("com.atguigu.gmall.product.mapper")

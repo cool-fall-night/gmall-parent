@@ -3,6 +3,7 @@ package com.atguigu.starter.cache.constant;
 /**
  * Redis常量配置类
  * set name admin
+ * @author 毛伟臣
  */
 public class RedisConst {
 

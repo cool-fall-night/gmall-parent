@@ -40,7 +40,7 @@ public class CacheAspect {
     @Around("@annotation(com.atguigu.starter.cache.annotation.GmallCache)")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        Object result = null;
+        Object result;
 
         //拼接商品的缓存Key值
         String cacheKey = determineCacheKey(joinPoint);
@@ -76,7 +76,8 @@ public class CacheAspect {
                     //抢到锁，推进调用方法
                     result = joinPoint.proceed(joinPoint.getArgs());
                     //方法调用成功，重新缓存，返回结果
-                    cacheOpsService.saveData(cacheKey, result);
+                    Long dataTtl = determineDataTtl(joinPoint);
+                    cacheOpsService.saveData(cacheKey, result, dataTtl);
                     return result;
                 } else {
                     //未抢到锁，睡眠1s，从缓存中查询
@@ -94,9 +95,10 @@ public class CacheAspect {
         return cacheData;
     }
 
+
+
     /**
      * 精确获得方法的返回值类型
-     * @return
      */
     private Type getMethodGenericReturnType(ProceedingJoinPoint joinPoint) {
 
@@ -107,7 +109,6 @@ public class CacheAspect {
 
     /**
      * 获取注解中的参数
-     * @return
      */
     private String determineCacheKey(ProceedingJoinPoint joinPoint) {
 
@@ -145,9 +146,15 @@ public class CacheAspect {
         if (StringUtils.isEmpty(lockName)){
             return RedisConst.LOCK_PREFICX + method.getName();
         }
-
-
         return evaluationExpression(lockName, joinPoint, String.class);
+    }
+
+    private Long determineDataTtl(ProceedingJoinPoint joinPoint) {
+
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        GmallCache cacheAnnotation = method.getDeclaredAnnotation(GmallCache.class);
+        return cacheAnnotation.dataTtl();
     }
 
     private <T> T evaluationExpression(String expression,

@@ -14,10 +14,6 @@ public interface CacheOpsService {
 
     /**
      * 缓存中获取JSON并转化为普通对象
-     * @param cacheKey
-     * @param clz
-     * @param <T>
-     * @return
      */
     <T> T getCacheData(String cacheKey, Class<T> clz);
 
@@ -25,7 +21,6 @@ public interface CacheOpsService {
      * 缓存中获取JSON并转化为精确泛型对象
      * @param cacheKey
      * @param type
-     * @param <T>
      * @return
      */
     <T> T getCacheData(String cacheKey, Type type);
@@ -77,4 +72,15 @@ public interface CacheOpsService {
      * @param fromRpc
      */
     void saveData(String cacheKey, Object fromRpc);
+
+    /**
+     * 使用指定的key在缓存中存入数据
+     */
+    void saveData(String cacheKey, Object fromRpc,Long dataTtl);
+
+    /**
+     * 延迟双删
+     * @param cacheKey
+     */
+    void delay2Delete(String cacheKey);
 }

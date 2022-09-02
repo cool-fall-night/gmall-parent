@@ -1,8 +1,8 @@
 package com.atguigu.gmall.web.controller;
 
 import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.feign.product.SkuDetailFeignClient;
 import com.atguigu.gmall.model.to.CategoryTreeTo;
-import com.atguigu.gmall.web.feign.CategoryFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,13 +22,13 @@ import java.util.List;
 public class IndexController {
 
     @Autowired
-    private CategoryFeignClient categoryFeignClient;
+    private SkuDetailFeignClient skuDetailFeignClient;
 
     @GetMapping({"/", "/index"})
     public String indexPage(Model model){
 
         //查询所有菜单 远程调用方法
-        Result<List<CategoryTreeTo>> result = categoryFeignClient.getAllCategoryWithTree();
+        Result<List<CategoryTreeTo>> result = skuDetailFeignClient.getAllCategoryWithTree();
 
         if (result.isOk()){
             List<CategoryTreeTo> data = result.getData();

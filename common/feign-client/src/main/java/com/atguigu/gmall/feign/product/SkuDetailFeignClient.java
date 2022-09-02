@@ -1,9 +1,10 @@
-package com.atguigu.gmall.item.feign;
+package com.atguigu.gmall.feign.product;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.SkuImage;
 import com.atguigu.gmall.model.product.SkuInfo;
 import com.atguigu.gmall.model.product.SpuSaleAttr;
+import com.atguigu.gmall.model.to.CategoryTreeTo;
 import com.atguigu.gmall.model.to.CategoryViewTo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -83,5 +84,13 @@ public interface SkuDetailFeignClient {
     @GetMapping("/skuDetailTo/categoryView/{category3Id}")
     @ApiOperation(value = "查询商品分类")
     Result<CategoryViewTo> getCategoryView(@PathVariable("category3Id") Long category3Id);
+
+    /**
+     * 远程调用getAllCategoryWithTree方法
+     * 拿到相应json
+     * @return
+     */
+    @GetMapping("/category/tree")
+    Result<List<CategoryTreeTo>> getAllCategoryWithTree();
 
 }

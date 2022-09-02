@@ -12,6 +12,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,6 +33,9 @@ public class CacheOpsServiceImpl implements CacheOpsService {
     @Autowired
     RedissonClient redissonClient;
 
+    //专门执行延迟任务的线程池
+    ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(4);
+
     @Override
     public <T> T getCacheData(String cacheKey, Class<T> clz) {
 
@@ -38,8 +43,7 @@ public class CacheOpsServiceImpl implements CacheOpsService {
         if (RedisConst.NULL_VAL.equals(jsonStr)) {
             return null;
         }
-        T t = Jsons.toObj(jsonStr, clz);
-        return t;
+        return Jsons.toObj(jsonStr, clz);
     }
 
     @Override
@@ -48,14 +52,13 @@ public class CacheOpsServiceImpl implements CacheOpsService {
         if (RedisConst.NULL_VAL.equals(jsonStr)) {
             return null;
         }
-        T t = Jsons.toObj(jsonStr, new TypeReference<T>() {
+        return Jsons.toObj(jsonStr, new TypeReference<T>() {
             @Override
             public Type getType() {
                 //返回携带泛型的type
                 return type;
             }
         });
-        return t;
     }
 
     @Override
@@ -83,8 +86,35 @@ public class CacheOpsServiceImpl implements CacheOpsService {
         }else {
             //有值缓存
             String cacheJson = Jsons.toJsonStr(fromRpc);
+            assert cacheJson != null;
             redisTemplate.opsForValue().set(cacheKey, cacheJson,RedisConst.SKU_DETAIL_TTL,TimeUnit.SECONDS);
         }
+    }
+
+    @Override
+    public void saveData(String cacheKey, Object fromRpc, Long dataTtl) {
+        if (fromRpc == null){
+            //空值缓存
+            redisTemplate.opsForValue().set(cacheKey, RedisConst.NULL_VAL,RedisConst.NULL_VAL_TTL, TimeUnit.SECONDS);
+        }else {
+            //有值缓存
+            String cacheJson = Jsons.toJsonStr(fromRpc);
+            assert cacheJson != null;
+            redisTemplate.opsForValue().set(cacheKey, cacheJson,dataTtl,TimeUnit.SECONDS);
+        }
+    }
+
+    @Override
+    public void delay2Delete(String cacheKey) {
+
+        redisTemplate.delete(cacheKey);
+
+        scheduledThreadPool.schedule(()->{
+            redisTemplate.delete(cacheKey);
+        },5,TimeUnit.SECONDS);
+
+
+
     }
 
     @Override
@@ -95,8 +125,7 @@ public class CacheOpsServiceImpl implements CacheOpsService {
 
         RLock lock = redissonClient.getLock(lockKey);
         //尝试加锁
-        boolean tryLock = lock.tryLock();
-        return tryLock;
+        return lock.tryLock();
     }
 
     @Override
@@ -112,19 +141,16 @@ public class CacheOpsServiceImpl implements CacheOpsService {
     @Override
     public Boolean tryLock(String lockName) {
         //定义每个商品专用的锁的key
-        String lockKey = lockName;
 
-        RLock lock = redissonClient.getLock(lockKey);
+        RLock lock = redissonClient.getLock(lockName);
         //尝试加锁
-        boolean tryLock = lock.tryLock();
-        return tryLock;
+        return lock.tryLock();
     }
 
     @Override
     public void unLock(String lockName) {
-        String lockKey = lockName;
 
-        RLock lock = redissonClient.getLock(lockKey);
+        RLock lock = redissonClient.getLock(lockName);
 
         lock.unlock();
     }

@@ -13,7 +13,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 
 @SpringCloudApplication
-@EnableFeignClients
+@EnableFeignClients(basePackages = {"com.atguigu.gmall.feign.product", "com.atguigu.gmall.feign.item"})
 public class WebAllMainApplication {
 
     public static void main(String[] args) {
