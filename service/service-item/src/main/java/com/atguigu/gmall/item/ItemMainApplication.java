@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
  * @since JDK1.8
  */
 
-@EnableAspectJAutoProxy     //开启AspectJ的自动代理功能
+@EnableAspectJAutoProxy
 @Import(RedissonAutoConfiguration.class)
 @EnableThreadPool
 @SpringCloudApplication

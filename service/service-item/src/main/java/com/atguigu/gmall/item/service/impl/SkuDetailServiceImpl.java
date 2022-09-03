@@ -65,9 +65,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
             dataTtl = 60 * 60 * 24 * 7L)
     public SkuDetailTo getSkuDetailTo(Long skuId) {
 
-        SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);
-
-        return fromRpc;
+        return getSkuDetailFromRpc(skuId);
     }
 
     public SkuDetailTo getSkuDetailFromRpc(@PathVariable Long skuId) {
@@ -150,9 +148,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
             return fromRpc;
         }
         //redis中有
-        SkuDetailTo detailTo = Jsons.toObj(jsonStr, SkuDetailTo.class);
 
-        return detailTo;
+        return Jsons.toObj(jsonStr, SkuDetailTo.class);
     }
 
     /**
