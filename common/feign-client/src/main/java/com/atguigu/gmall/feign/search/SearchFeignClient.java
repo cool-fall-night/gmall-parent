@@ -2,6 +2,8 @@ package com.atguigu.gmall.feign.search;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.list.Goods;
+import com.atguigu.gmall.model.list.SearchParam;
+import com.atguigu.gmall.model.list.SearchResponseVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,4 +23,8 @@ public interface SearchFeignClient {
 
     @DeleteMapping("/deleteGoods/{skuId}")
     Result<Goods> deleteGoods(@PathVariable Long skuId);
+
+
+    @PostMapping("/goods/search")
+    Result<SearchResponseVo> search(@RequestBody SearchParam searchParam);
 }

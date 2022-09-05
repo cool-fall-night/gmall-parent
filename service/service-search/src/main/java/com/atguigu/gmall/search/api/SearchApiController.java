@@ -2,6 +2,8 @@ package com.atguigu.gmall.search.api;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.list.Goods;
+import com.atguigu.gmall.model.list.SearchParam;
+import com.atguigu.gmall.model.list.SearchResponseVo;
 import com.atguigu.gmall.search.service.GoodsService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,6 @@ public class SearchApiController {
     public Result<Goods> saveGoods(@RequestBody Goods goods){
 
         goodsService.savaGoods(goods);
-
         return Result.ok();
     }
 
@@ -35,7 +36,15 @@ public class SearchApiController {
     public Result<Goods> deleteGoods(@PathVariable Long skuId){
 
         goodsService.deleteGoods(skuId);
-
         return Result.ok();
     }
+
+    @PostMapping("/goods/search")
+    public Result<SearchResponseVo> search(@RequestBody SearchParam searchParam){
+
+        //TODO 商品检索
+        //goodsService.search(searchParam);
+        return Result.ok();
+    }
+
 }

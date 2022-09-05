@@ -30,4 +30,5 @@ public class GoodsServiceImpl implements GoodsService {
     public void deleteGoods(Long skuId) {
         goodsRepository.deleteById(skuId);
     }
+
 }

@@ -20,4 +20,5 @@ public interface GoodsService {
     void savaGoods(Goods goods);
 
     void deleteGoods(Long skuId);
+
 }
