@@ -35,7 +35,7 @@ import java.util.List;
 
 @Api(tags = "商品详情的API")
 @RestController
-@RequestMapping("/api/inner/rpc/product/")
+@RequestMapping("/api/inner/rpc/product/skuDetailTo")
 public class SkuDetailApiController {
 
     @Autowired
@@ -47,19 +47,13 @@ public class SkuDetailApiController {
     @Autowired
     private BaseCategory3Service baseCategory3Service;
 
-//    @GetMapping("/getSkuDetailTo/{skuId}")
-//    @ApiOperation(value = "查询商品详情")
-//    Result<SkuDetailTo> getSkuDetailTo(@PathVariable Long skuId){
-//        SkuDetailTo skuDetailTo =  skuInfoService.getSkuDetailTo(skuId);
-//        return Result.ok(skuDetailTo);
-//    }
 
     /**
      * 查询商品基本信息
      * @param skuId
      * @return
      */
-    @GetMapping("/skuDetailTo/info/{skuId}")
+    @GetMapping("/info/{skuId}")
     @ApiOperation(value = "查询商品基本信息")
     public Result<SkuInfo> getSkuInfo(@PathVariable Long skuId){
         SkuInfo skuInfo = skuInfoService.getSkuInfo(skuId);
@@ -71,7 +65,7 @@ public class SkuDetailApiController {
      * @param skuId
      * @return
      */
-    @GetMapping("/skuDetailTo/images/{skuId}")
+    @GetMapping("/images/{skuId}")
     @ApiOperation(value = "查询商品图片信息")
     public Result<List<SkuImage>> getSkuImages(@PathVariable Long skuId){
         List<SkuImage> skuImages = skuInfoService.getSkuImages(skuId);
@@ -83,7 +77,7 @@ public class SkuDetailApiController {
      * @param skuId
      * @return
      */
-    @GetMapping("/skuDetailTo/price/{skuId}")
+    @GetMapping("/price/{skuId}")
     @ApiOperation(value = "查询商品实时价格")
     public Result<BigDecimal> getSkuPrice(@PathVariable Long skuId){
         BigDecimal skuPrice = skuInfoService.getSkuPrice(skuId);
@@ -95,7 +89,7 @@ public class SkuDetailApiController {
      * @param skuId
      * @return
      */
-    @GetMapping("/skuDetailTo/spuSaleAttrList/{skuId}/{spuId}")
+    @GetMapping("/spuSaleAttrList/{skuId}/{spuId}")
     @ApiOperation(value = "查询商品属性名值")
     public Result<List<SpuSaleAttr>> getSpuSaleAttrValues(@PathVariable("skuId") Long skuId,
                                                           @PathVariable("spuId") Long spuId){
@@ -109,7 +103,7 @@ public class SkuDetailApiController {
      * @param spuId
      * @return
      */
-    @GetMapping("/skuDetailTo/allSkuSaleAttrValueJson/{spuId}")
+    @GetMapping("/allSkuSaleAttrValueJson/{spuId}")
     @ApiOperation(value = "查询sku组合")
     public Result<String> getAllSkuSaleAttrValueJson(@PathVariable("spuId") Long spuId){
 
@@ -123,7 +117,7 @@ public class SkuDetailApiController {
      * @param category3Id
      * @return
      */
-    @GetMapping("/skuDetailTo/categoryView/{category3Id}")
+    @GetMapping("/categoryView/{category3Id}")
     @ApiOperation(value = "查询商品分类")
     public Result<CategoryViewTo> getCategoryView(@PathVariable("category3Id") Long category3Id){
 

@@ -14,7 +14,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
  * @since JDK1.8
  */
 @Data
-@Document(indexName = "person",shards = 1,replicas = 1)
+//@Document(indexName = "person",shards = 1,replicas = 1)
 public class Person {
 
     @Id
