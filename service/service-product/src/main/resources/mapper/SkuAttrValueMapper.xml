@@ -17,7 +17,7 @@
     </sql>
 
     <resultMap id="getSearchAttr" type="com.atguigu.gmall.model.list.SearchAttr">
-        <id column="attt_id" property="attrId"/>
+        <id column="attr_id" property="attrId"/>
         <result column="value_name" property="attrValue"/>
         <result column="attr_name" property="attrName"/>
     </resultMap>
@@ -27,6 +27,6 @@
         FROM sku_attr_value sav
                  LEFT JOIN base_attr_info bai ON sav.`attr_id` = bai.`id`
                  LEFT JOIN base_attr_value bav ON sav.`value_id` = bav.`id`
-        WHERE sav.id = #{skuId}
+        WHERE sav.sku_id = #{skuId}
     </select>
 </mapper>

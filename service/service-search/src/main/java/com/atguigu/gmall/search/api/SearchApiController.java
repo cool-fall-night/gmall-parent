@@ -42,9 +42,8 @@ public class SearchApiController {
     @PostMapping("/goods/search")
     public Result<SearchResponseVo> search(@RequestBody SearchParam searchParam){
 
-        //TODO 商品检索
-        //goodsService.search(searchParam);
-        return Result.ok();
+        SearchResponseVo search = goodsService.search(searchParam);
+        return Result.ok(search);
     }
 
 }

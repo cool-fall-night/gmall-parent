@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @author 毛伟臣
@@ -25,21 +24,29 @@ public class SearchController {
     private SearchFeignClient searchFeignClient;
 
     @GetMapping("/list.html")
-    public String search(@RequestBody SearchParam searchParam, Model model){
+    public String search(SearchParam searchParam, Model model){
 
-        Result<SearchResponseVo> searchVo = searchFeignClient.search(searchParam);
-        SearchResponseVo data = searchVo.getData();
-
-        model.addAttribute("searchParam",null);
-        model.addAttribute("trademarkParam",null);
-        model.addAttribute("urlParam",null);
-        model.addAttribute("propsParamList",null);
-        model.addAttribute("trademarkList",null);
-        model.addAttribute("attrsList",null);
-        model.addAttribute("orderMap",null);
-        model.addAttribute("goodsList",null);
-        model.addAttribute("pageNo",null);
-        model.addAttribute("totalPages",null);
+        Result<SearchResponseVo> search = searchFeignClient.search(searchParam);
+        SearchResponseVo data = search.getData();
+        //1、检索条件
+        model.addAttribute("searchParam",data.getSearchParam());
+        //2、品牌面包屑
+        model.addAttribute("trademarkParam",data.getTrademarkParam());
+        //3、属性面包屑  集合：元素为prop对象，属性包含attrId、attrName、attrValue
+        model.addAttribute("propsParamList",data.getPropsParamList());
+        //4、所有品牌  集合：元素为trademark对象，属性包含tmId、tmName、tmLogoUrl
+        model.addAttribute("trademarkList",data.getTrademarkList());
+        //5、所有属性  集合：元素为baseAttrInfo对象,属性包含attrId、attrName、List<String> attrValueList
+        model.addAttribute("attrsList",data.getAttrsList());
+        //6、页面排序信息 对象：属性包含sort(asc/desc)、type(1/2)
+        model.addAttribute("orderMap",data.getOrderMap());
+        //7、商品信息，集合：元素为goods 属性包含id、defaultImg、price、title、
+        model.addAttribute("goodsList",data.getGoodsList());
+        //8、分页信息
+        model.addAttribute("pageNo",data.getPageNo());
+        model.addAttribute("totalPages",data.getTotalPages());
+        //9、当前url信息
+        model.addAttribute("urlParam",data.getUrlParam());
 
         return "list/index";
     }

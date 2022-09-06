@@ -22,4 +22,6 @@ public class RedisConst {
     public static final String CACHE_CATEGORYS = "categorys";
 
     public static final String LOCK_PREFICX = "lock:";
+
+    public static final int SEARCH_PAGE_SIZE = 8;
 }
