@@ -1,4 +1,4 @@
-package com.atguigu.starter.cache.constant;
+package com.atguigu.gmall.common.constant;
 
 /**
  * Redis常量配置类
@@ -26,10 +26,4 @@ public class RedisConst {
     public static final int SEARCH_PAGE_SIZE = 8;
 
     public static final String SKU_DEFAULT_SORT = "asc";
-
-    public static final Long BASE_HOT_SCORE = 100L;
-
-    public static final Long HOT_SCORE_SIZE = 100L;
-
-    public static final String SKU_HOTSCORE_PRE = "sku:hotscore:";
 }

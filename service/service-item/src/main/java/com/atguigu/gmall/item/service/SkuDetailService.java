@@ -14,4 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface SkuDetailService {
 
     SkuDetailTo getSkuDetailTo(@PathVariable Long skuId);
+
+    void updateHotScore(Long skuId);
 }

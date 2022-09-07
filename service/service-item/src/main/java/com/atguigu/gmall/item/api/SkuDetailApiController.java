@@ -1,6 +1,7 @@
 package com.atguigu.gmall.item.api;
 
 import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.feign.search.SearchFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.to.SkuDetailTo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,14 @@ public class SkuDetailApiController {
     @Autowired
     private SkuDetailService skuDetailService;
 
+
     @GetMapping("/getSkuDetailTo/{skuId}")
     public Result<SkuDetailTo> getSkuDetailTo(@PathVariable Long skuId){
 
         SkuDetailTo skuDetailTo = skuDetailService.getSkuDetailTo(skuId);
+
+        // TODO 更新热度分
+        skuDetailService.updateHotScore(skuId);
 
         return Result.ok(skuDetailTo);
     }

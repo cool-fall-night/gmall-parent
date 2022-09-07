@@ -46,4 +46,18 @@ public class SearchApiController {
         return Result.ok(search);
     }
 
+    /**
+     * 更新热点分数
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/goods/increaseHotScore/{skuId}")
+    public Result increaseHotScore(@PathVariable("skuId") Long skuId,
+                                   @RequestParam("score") Long score){
+
+        goodsService.increaseHotScore(skuId,score);
+
+        return Result.ok();
+    }
+
 }

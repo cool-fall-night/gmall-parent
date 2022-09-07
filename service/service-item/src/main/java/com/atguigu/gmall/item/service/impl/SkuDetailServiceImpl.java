@@ -4,6 +4,7 @@ package com.atguigu.gmall.item.service.impl;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.common.util.Jsons;
 import com.atguigu.gmall.feign.product.SkuDetailFeignClient;
+import com.atguigu.gmall.feign.search.SearchFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.product.SkuImage;
 import com.atguigu.gmall.model.product.SkuInfo;
@@ -42,6 +43,9 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     private SkuDetailFeignClient skuDetailFeignClient;
 
     @Autowired
+    private SearchFeignClient searchFeignClient;
+
+    @Autowired
     ThreadPoolExecutor executor;
 
     @Autowired
@@ -66,6 +70,17 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     public SkuDetailTo getSkuDetailTo(Long skuId) {
 
         return getSkuDetailFromRpc(skuId);
+    }
+
+    @Override
+    public void updateHotScore(Long skuId) {
+        //每次加入商品详情时，热点分+1
+        Long increment = redisTemplate.opsForValue().increment(RedisConst.SKU_HOTSCORE_PRE + skuId);
+        //热点分到达整百是，提交一次更新
+        if (increment%RedisConst.HOT_SCORE_SIZE==0){
+            searchFeignClient.increaseHotScore(skuId, increment);
+        }
+
     }
 
     public SkuDetailTo getSkuDetailFromRpc(@PathVariable Long skuId) {
