@@ -27,6 +27,11 @@ spring:
           predicates:
             - Path=/admin/product/**  # 路径断言：
 
+        - id: user_route
+          uri: lb://service-user
+          predicates:
+            - Path=/api/user/**  # 路径断言：
+
         - id: web_all_route
           uri: lb://web-all
           predicates:

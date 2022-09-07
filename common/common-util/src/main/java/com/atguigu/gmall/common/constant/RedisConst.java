@@ -26,4 +26,5 @@ public class RedisConst {
     public static final int SEARCH_PAGE_SIZE = 8;
 
     public static final String SKU_DEFAULT_SORT = "asc";
+    public static final String USER_INFO_PREFIX = "user:info:";
 }
