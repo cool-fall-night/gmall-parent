@@ -25,6 +25,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * 全局授权过滤器
@@ -54,7 +55,7 @@ public class GlobalAuthFilter implements GlobalFilter {
         String path = exchange.getRequest().getURI().getPath();
         String uri = exchange.getRequest().getURI().toString();
 
-        log.info("{} 请求开始", path);
+//        log.info("{} 请求开始", path);
         //1、无需登录就可访问的资源
         for (String url : authUrlProperties.getNoAuthUrl()) {
             //遍历放行列表
@@ -122,10 +123,28 @@ public class GlobalAuthFilter implements GlobalFilter {
 
         if (info != null) {
             ServerHttpRequest request = exchange.getRequest();
-            ServerHttpRequest httpRequest = request.mutate().header(RedisConst.USERID_HEADER, info.getId().toString()).build();
-            return exchange.mutate().request(httpRequest).build();
+
+            String userTempId = getUserTempId(exchange);
+
+            ServerHttpRequest newRequest = request.mutate()
+                    .header(RedisConst.USERID_HEADER, info.getId().toString())
+                    .header(RedisConst.USERTEMPID_HEADER,userTempId)
+                    .build();
+            return exchange.mutate().request(newRequest).response(exchange.getResponse()).build();
         }
         return exchange;
+    }
+
+    private String getUserTempId(ServerWebExchange exchange) {
+
+        String userTempId = exchange.getRequest().getHeaders().getFirst(RedisConst.USERTEMPID_HEADER);
+        if (StringUtils.isEmpty(userTempId)){
+            HttpCookie cookie = exchange.getRequest().getCookies().getFirst(RedisConst.USERTEMPID_HEADER);
+            if (cookie != null){
+                userTempId = cookie.getValue();
+            }
+        }
+        return userTempId;
     }
 
     private Mono<Void> redirectToConsumerPage(String location, ServerWebExchange exchange) {

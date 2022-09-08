@@ -1,0 +1,9 @@
+server:
+  port: 7005
+
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+#订单信息全部存储在redis中，配置已有nacos统一管理
+
+#自定义配置

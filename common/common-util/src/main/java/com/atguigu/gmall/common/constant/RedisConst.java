@@ -36,4 +36,6 @@ public class RedisConst {
     public static final String SKU_HOTSCORE_PRE = "sku:hotscore:";
 
     public static final String USERID_HEADER = "userid";
+
+    public static final String USERTEMPID_HEADER = "userTempId";
 }
