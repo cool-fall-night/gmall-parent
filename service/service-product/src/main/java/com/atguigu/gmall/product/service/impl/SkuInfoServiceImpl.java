@@ -1,17 +1,15 @@
 package com.atguigu.gmall.product.service.impl;
+import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.feign.search.SearchFeignClient;
 import com.atguigu.gmall.model.list.SearchAttr;
-import com.google.common.collect.Lists;
+
 import java.util.Date;
 
 import com.atguigu.gmall.model.list.Goods;
 import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.model.to.CategoryViewTo;
-import com.atguigu.gmall.model.to.SkuDetailTo;
-import com.atguigu.gmall.product.mapper.BaseCategory3Mapper;
 import com.atguigu.gmall.product.mapper.SkuInfoMapper;
 import com.atguigu.gmall.product.service.*;
-import com.atguigu.starter.cache.constant.RedisConst;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;

@@ -1,6 +1,7 @@
 package com.atguigu.gmall.item.service.impl;
 
 
+import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.common.util.Jsons;
 import com.atguigu.gmall.feign.product.SkuDetailFeignClient;
@@ -12,7 +13,6 @@ import com.atguigu.gmall.model.product.SpuSaleAttr;
 import com.atguigu.gmall.model.to.CategoryViewTo;
 import com.atguigu.gmall.model.to.SkuDetailTo;
 import com.atguigu.starter.cache.annotation.GmallCache;
-import com.atguigu.starter.cache.constant.RedisConst;
 import com.atguigu.starter.cache.service.CacheOpsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -77,7 +77,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         //每次加入商品详情时，热点分+1
         Long increment = redisTemplate.opsForValue().increment(RedisConst.SKU_HOTSCORE_PRE + skuId);
         //热点分到达整百是，提交一次更新
-        if (increment%RedisConst.HOT_SCORE_SIZE==0){
+        if (increment% RedisConst.HOT_SCORE_SIZE==0){
             searchFeignClient.increaseHotScore(skuId, increment);
         }
 

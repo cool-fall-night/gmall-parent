@@ -1,7 +1,7 @@
 package com.atguigu.gmall.product.init;
 
+import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.product.service.SkuInfoService;
-import com.atguigu.starter.cache.constant.RedisConst;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,6 +4,11 @@ server:
   port: 80
 
 spring:
+  #Redis参数配置
+  redis:
+    host: 192.168.6.66
+    port: 6379
+    password: MWc123456
 
   zipkin: #配置链路追踪的地址
     base-url: http://192.168.6.66:9411/
@@ -36,3 +41,18 @@ spring:
           uri: lb://web-all
           predicates:
           - Host=**.gmall.com  # Host断言：
+
+app:
+  auth:
+    no-auth-url:
+      - /css/**
+      - /img/**
+      - /js/**
+      - /login.html
+      - /api/user/passport/login
+    login-auth-url:
+      - /order/**
+
+    deny-auth-url:
+      - /api/inner/rpc/**
+    login-page: http://passport.gmall.com/login.html

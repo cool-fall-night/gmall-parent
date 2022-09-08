@@ -1,11 +1,10 @@
 package com.atguigu.gmall.product.controller;
 
 
+import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.product.bloom.BloomDataQueryService;
 import com.atguigu.gmall.product.bloom.BloomOpsService;
-import com.atguigu.gmall.product.bloom.impl.SkuBloomDataQueryServiceImpl;
-import com.atguigu.starter.cache.constant.RedisConst;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

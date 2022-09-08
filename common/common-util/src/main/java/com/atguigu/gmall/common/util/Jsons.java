@@ -55,7 +55,7 @@ public class Jsons {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return null;
+        return t;
     }
 
     /**
@@ -76,7 +76,7 @@ public class Jsons {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return null;
+        return t;
     }
 
 }
