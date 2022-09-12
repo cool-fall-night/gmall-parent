@@ -31,6 +31,8 @@ public interface CartService {
      */
     List<CartInfo> getCartList(String cartKey);
 
+    void updateCartAllItemPrice(String cartKey, List<CartInfo> cartInfos);
+
     /**
      * 合并购物车
      */

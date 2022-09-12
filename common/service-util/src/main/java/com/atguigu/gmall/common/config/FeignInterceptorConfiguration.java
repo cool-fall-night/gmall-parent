@@ -1,4 +1,4 @@
-package com.atguigu.gmall.web.config;
+package com.atguigu.gmall.common.config;
 
 import com.atguigu.gmall.common.constant.RedisConst;
 import feign.RequestInterceptor;
@@ -17,10 +17,10 @@ import javax.servlet.http.HttpServletRequest;
  * @since JDK1.8
  */
 
-//@Configuration
-public class WebAllConfiguration {
+@Configuration
+public class FeignInterceptorConfiguration {
 
-//    @Bean
+    @Bean
     public RequestInterceptor userHeaderInterceptor(){
 
 

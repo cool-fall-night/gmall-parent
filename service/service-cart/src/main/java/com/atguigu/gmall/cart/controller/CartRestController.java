@@ -1,6 +1,7 @@
 package com.atguigu.gmall.cart.controller;
 
 import com.atguigu.gmall.cart.service.CartService;
+import com.atguigu.gmall.common.annotation.EnableThreadPool;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.cart.CartInfo;
 import com.atguigu.gmall.model.product.SkuInfo;
@@ -17,6 +18,7 @@ import java.util.List;
  * @since JDK1.8
  */
 
+@EnableThreadPool
 @RestController
 @RequestMapping("/api/cart")
 public class CartRestController {
