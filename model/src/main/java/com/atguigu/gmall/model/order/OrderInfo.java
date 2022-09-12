@@ -6,6 +6,7 @@ import com.atguigu.gmall.model.base.BaseEntity;
 import com.atguigu.gmall.model.enums.ActivityType;
 import com.atguigu.gmall.model.enums.CouponType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -25,6 +26,10 @@ import java.util.Map;
 @TableName("order_info")
 public class OrderInfo extends BaseEntity {
     private static final long serialVersionUID = 1L;
+
+//    @ApiModelProperty(value = "订单id")
+//    @TableId("id")
+//    private Long id;
 
     @ApiModelProperty(value = "收货人")
     @TableField("consignee")
