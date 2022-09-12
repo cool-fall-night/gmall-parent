@@ -1,5 +1,8 @@
 package com.atguigu.gmall.model.cart;
 
+import com.atguigu.gmall.common.constant.RedisConst;
+import com.atguigu.gmall.common.execption.GmallException;
+import com.atguigu.gmall.common.result.ResultCodeEnum;
 import com.atguigu.gmall.model.activity.CouponInfo;
 import com.atguigu.gmall.model.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -8,7 +11,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -24,13 +28,18 @@ public class CartInfo extends BaseEntity {
     @TableField("sku_id")
     private Long skuId;
 
-    @ApiModelProperty(value = "放入购物车时价格")
-    @TableField("cart_price")
-    private BigDecimal cartPrice;
 
     @ApiModelProperty(value = "数量")
     @TableField("sku_num")
     private Integer skuNum;
+
+    public void setSkuNum(Integer skuNum){
+
+        if (skuNum > RedisConst.ITEM_MAX_SIZE){
+            throw new GmallException(ResultCodeEnum.ITEM_OVERFLOW);
+        }
+        this.skuNum = skuNum;
+    }
 
     @ApiModelProperty(value = "图片文件")
     @TableField("img_url")
@@ -46,11 +55,15 @@ public class CartInfo extends BaseEntity {
 
     //  ,fill = FieldFill.INSERT
     @TableField(value = "create_time")
-    private Timestamp createTime;
+    private Date createTime;
 
     //  ,fill = FieldFill.INSERT_UPDATE)
     @TableField(value = "update_time")
-    private Timestamp updateTime;
+    private Date updateTime;
+
+    @ApiModelProperty(value = "放入购物车时价格")
+    @TableField("cart_price")
+    private BigDecimal cartPrice;
 
     // 实时价格 skuInfo.price
     @TableField(exist = false)

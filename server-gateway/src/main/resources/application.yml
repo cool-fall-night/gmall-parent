@@ -37,6 +37,11 @@ spring:
           predicates:
             - Path=/api/user/**  # 路径断言：
 
+        - id: cart_route
+          uri: lb://service-cart
+          predicates:
+            - Path=/api/cart/**  # 路径断言：
+
         - id: web_all_route
           uri: lb://web-all
           predicates:

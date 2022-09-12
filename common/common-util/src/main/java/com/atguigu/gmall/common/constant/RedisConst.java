@@ -38,4 +38,10 @@ public class RedisConst {
     public static final String USERID_HEADER = "userid";
 
     public static final String USERTEMPID_HEADER = "userTempId";
+
+    public static final String CART_KEY_PREFIX = "cart:user:";
+
+    public static final Long CART_MAX_SIZE = 200L;
+
+    public static final Integer ITEM_MAX_SIZE = 200;
 }

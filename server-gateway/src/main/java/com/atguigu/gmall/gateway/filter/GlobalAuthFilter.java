@@ -25,7 +25,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 /**
  * 全局授权过滤器
@@ -107,6 +106,10 @@ public class GlobalAuthFilter implements GlobalFilter {
                 return redirectToConsumerPage(authUrlProperties.getLoginPage() + "?originUrl=" + uri, exchange);
             }
         }
+//        if (info == null && !StringUtils.isEmpty(tokenValue)){
+//            return redirectToConsumerPage(authUrlProperties.getLoginPage() + "?originUrl=" + uri, exchange);
+//        }
+        exchange = userIdTransport(info, exchange);
         return chain.filter(exchange);
     }
 
@@ -131,8 +134,18 @@ public class GlobalAuthFilter implements GlobalFilter {
                     .header(RedisConst.USERTEMPID_HEADER,userTempId)
                     .build();
             return exchange.mutate().request(newRequest).response(exchange.getResponse()).build();
+        }else {
+            ServerHttpRequest request = exchange.getRequest();
+
+            String userTempId = getUserTempId(exchange);
+
+            ServerHttpRequest newRequest = request.mutate()
+//                    .header(RedisConst.USERID_HEADER, info.getId().toString())
+                    .header(RedisConst.USERTEMPID_HEADER,userTempId)
+                    .build();
+            return exchange.mutate().request(newRequest).response(exchange.getResponse()).build();
         }
-        return exchange;
+//        return exchange;
     }
 
     private String getUserTempId(ServerWebExchange exchange) {

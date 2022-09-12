@@ -2,21 +2,20 @@ package com.atguigu.gmall.common.handler;
 
 import com.atguigu.gmall.common.execption.GmallException;
 import com.atguigu.gmall.common.result.Result;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import com.atguigu.gmall.common.result.ResultCodeEnum;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * 全局异常处理类
  *
  */
-@ControllerAdvice
-@Slf4j
+@ResponseBody
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    @ResponseBody
     public Result error(Exception e){
         e.printStackTrace();
         return Result.fail();
@@ -28,8 +27,10 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(GmallException.class)
-    @ResponseBody
-    public Result error(GmallException e){
-        return Result.fail(e.getMessage());
+    public Result handlerGmallException(GmallException gmallException){
+
+        ResultCodeEnum codeEnum = gmallException.getCodeEnum();
+
+        return Result.build("",codeEnum);
     }
 }
