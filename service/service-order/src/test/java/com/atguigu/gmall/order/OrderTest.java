@@ -33,7 +33,6 @@ public class OrderTest {
     @Test
     public void testInsert(){
 
-        //TODO Caused by: java.lang.IllegalStateException: Insert statement does not support sharding table routing to multiple data nodes.
         OrderInfo info = new OrderInfo();
         info.setTotalAmount(new BigDecimal("2.1"));
         info.setUserId(13L);
