@@ -44,4 +44,6 @@ public class RedisConst {
     public static final Long CART_MAX_SIZE = 200L;
 
     public static final Integer ITEM_MAX_SIZE = 200;
+
+    public static final String ORDER_TEMP_TOKEN = "order:temptoken:";
 }

@@ -13,4 +13,8 @@ import com.atguigu.gmall.model.vo.order.OrderConfirmVo;
 public interface OrderBizService {
 
     OrderConfirmVo getOrderConfirmData();
+
+    String getGenerateTradeNo();
+
+    boolean checkGenerateTradeNo(String tradeNo);
 }
