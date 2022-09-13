@@ -60,7 +60,7 @@ public class BaseAttrController {
     public Result saveAttrInfo(@RequestBody BaseAttrInfo info){
 
         baseAttrInfoService.saveAttrInfoAndValue(info);
-        //TODO 添加/修改平台属性
+        //添加/修改平台属性
         return Result.ok();
 
     }

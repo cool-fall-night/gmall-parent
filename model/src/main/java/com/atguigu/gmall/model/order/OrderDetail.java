@@ -37,6 +37,10 @@ public class OrderDetail extends BaseEntity {
     @TableField("order_price")
     private BigDecimal orderPrice;
 
+    @ApiModelProperty(value = "购买总价格(下单时sku价格）")
+    @TableField("total_order_price")
+    private BigDecimal totalOrderPrice;
+
     @ApiModelProperty(value = "购买个数")
     @TableField("sku_num")
     private Integer skuNum;

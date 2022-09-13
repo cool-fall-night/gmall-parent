@@ -68,8 +68,5 @@ public class CartRestController {
         cartService.deleteCart(skuId, cartKey);
 
         return Result.ok();
-
     }
-    
-
 }

@@ -11,3 +11,5 @@ spring:
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
 #自定义配置
+app:
+  ware-url: http://localhost:9001

@@ -66,4 +66,17 @@ public interface CartService {
      * @param cartKey
      */
     void deleteCart(Long skuId, String cartKey);
+
+    /**
+     * 删除购物车中选择的商品
+     * @param cartKey
+     */
+    void deleteChecked(String cartKey);
+
+    /**
+     * 获取购物车内被选择的商品详情
+     * @param cartKey
+     * @return
+     */
+    List<CartInfo> getCheckedItem(String cartKey);
 }

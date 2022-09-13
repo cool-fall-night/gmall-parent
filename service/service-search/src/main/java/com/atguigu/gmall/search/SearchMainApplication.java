@@ -1,5 +1,6 @@
 package com.atguigu.gmall.search;
 
+import com.atguigu.gmall.common.annotation.EnableAutoFeignInterceptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
@@ -11,7 +12,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
  * @version 1.0
  * @since JDK1.8
  */
-
+@EnableAutoFeignInterceptor
 @EnableElasticsearchRepositories
 @SpringCloudApplication
 public class SearchMainApplication {

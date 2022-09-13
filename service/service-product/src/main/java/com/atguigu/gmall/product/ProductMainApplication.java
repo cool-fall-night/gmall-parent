@@ -1,5 +1,6 @@
 package com.atguigu.gmall.product;
 
+import com.atguigu.gmall.common.annotation.EnableAutoFeignInterceptor;
 import com.atguigu.gmall.common.config.RedissonAutoConfiguration;
 import com.atguigu.gmall.common.config.Swagger2Config;
 import org.mybatis.spring.annotation.MapperScan;
@@ -16,7 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @version 1.0
  * @since JDK1.8
  */
-
+@EnableAutoFeignInterceptor
 @EnableFeignClients(basePackages = "com.atguigu.gmall.feign.search")
 @EnableScheduling
 @Import({Swagger2Config.class, RedissonAutoConfiguration.class})

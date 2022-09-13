@@ -1,5 +1,6 @@
 package com.atguigu.gmall.user;
 
+import com.atguigu.gmall.common.annotation.EnableAutoFeignInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
@@ -11,7 +12,7 @@ import org.springframework.cloud.client.SpringCloudApplication;
  * @version 1.0
  * @since JDK1.8
  */
-
+@EnableAutoFeignInterceptor
 @SpringCloudApplication
 @MapperScan("com.atguigu.gmall.user.mapper")
 public class UserMainApplication {

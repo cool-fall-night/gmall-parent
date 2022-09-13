@@ -69,7 +69,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public void increaseHotScore(Long skuId, Long score) {
 
-        //TODO 更新热度分
+        //更新热度分
         Goods goods = goodsRepository.findById(skuId).get();
         goods.setHotScore(score);
         //更新Es

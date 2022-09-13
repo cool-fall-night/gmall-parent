@@ -103,7 +103,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
     public void onSale(Long skuId) {
 
         skuInfoMapper.updateIsSale(skuId,1);
-        //TODO 在es中保存这个商品，可以被检索
+        //在es中保存这个商品，可以被检索
         Goods goods = getGoodsBySkuId(skuId);
         searchFeignClient.saveGoods(goods);
 
@@ -113,7 +113,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
     public void cancelSale(Long skuId) {
 
         skuInfoMapper.updateIsSale(skuId,0);
-        //TODO 在es中删除这个商品
+        //在es中删除这个商品
         searchFeignClient.deleteGoods(skuId);
     }
 
@@ -142,7 +142,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
         goods.setCategory3Id(categoryView.getCategory3Id());
         goods.setCategory3Name(categoryView.getCategory3Name());
 
-        //TODO 热度分更新
+        //热度分更新
         goods.setHotScore(0L);
 
         List<SearchAttr> searchAttrList = skuAttrValueService.getAttrNameAndValueBySkuId(skuId);

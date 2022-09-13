@@ -47,4 +47,12 @@ public class CartController {
         return "cart/index";
 
     }
+
+    @GetMapping("/cart/deleteChecked")
+    public String deleteChecked(){
+
+        cartFeignClient.deleteChecked();
+
+        return "cart/index";
+    }
 }

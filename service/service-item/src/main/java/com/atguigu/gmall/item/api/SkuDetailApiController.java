@@ -32,7 +32,7 @@ public class SkuDetailApiController {
 
         SkuDetailTo skuDetailTo = skuDetailService.getSkuDetailTo(skuId);
 
-        // TODO 更新热度分
+        //更新热度分
         skuDetailService.updateHotScore(skuId);
 
         return Result.ok(skuDetailTo);

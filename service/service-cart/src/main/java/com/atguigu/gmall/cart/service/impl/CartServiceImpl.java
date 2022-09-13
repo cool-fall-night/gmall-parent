@@ -198,6 +198,38 @@ public class CartServiceImpl implements CartService {
         hashOps.delete(cartKey, skuId.toString());
     }
 
+    @Override
+    public void deleteChecked(String cartKey) {
+
+        BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(cartKey);
+
+        List<String> idList = getCheckedItem(cartKey)
+                .stream()
+                .map(cartInfo -> cartInfo.getSkuId().toString())
+                .collect(Collectors.toList());
+
+        if (idList.size() > 0){
+            hashOps.delete(idList.toArray());
+        }
+    }
+
+    @Override
+    public List<CartInfo> getCheckedItem(String cartKey) {
+
+        BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(cartKey);
+
+        List<CartInfo> cartInfos = hashOps.values()
+                .stream()
+                .map(str -> Jsons.toObj(str, CartInfo.class))
+                .sorted((o1, o2) -> o2.getCreateTime().compareTo(o1.getCreateTime()))
+                .collect(Collectors.toList());
+
+        return cartInfos
+                .stream()
+                .filter(cartInfo -> cartInfo.getIsChecked() == 1)
+                .collect(Collectors.toList());
+    }
+
     /**
      * 根据cartInfo转换为skuInfo
      *

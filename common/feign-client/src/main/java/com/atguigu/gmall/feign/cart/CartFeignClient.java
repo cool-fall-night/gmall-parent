@@ -1,13 +1,14 @@
 package com.atguigu.gmall.feign.cart;
 
 import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.model.cart.CartInfo;
 import com.atguigu.gmall.model.product.SkuInfo;
 import com.atguigu.gmall.model.to.SkuDetailTo;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author 毛伟臣
@@ -28,9 +29,22 @@ public interface CartFeignClient {
      * @return SkuInfo
      */
     @GetMapping("/addToCart")
-    public Result<SkuInfo> addToCart(@RequestParam("skuId") Long skuId,
+    Result<SkuInfo> addToCart(@RequestParam("skuId") Long skuId,
                                      @RequestParam("skuNum") Integer skuNum);
 
+    /**
+     * 远程调用删除购物车中选择的商品
+     * @return
+     */
+    @DeleteMapping("/deleteChecked")
+    Result deleteChecked();
 
+
+    /**
+     * 获取购物车内被选择的商品详情
+     * @return
+     */
+    @GetMapping("/getCheckedItem")
+    Result<List<CartInfo>> getCheckedItem();
 
 }
