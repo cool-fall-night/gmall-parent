@@ -25,7 +25,8 @@ public class OrderTest {
     @Test
     public void testSearch(){
 
-        orderInfoMapper.selectById(1);
+        OrderInfo orderInfo = orderInfoMapper.selectById(13L);
+        System.out.println("orderInfo = " + orderInfo);
 
     }
 
@@ -35,6 +36,7 @@ public class OrderTest {
         //TODO Caused by: java.lang.IllegalStateException: Insert statement does not support sharding table routing to multiple data nodes.
         OrderInfo info = new OrderInfo();
         info.setTotalAmount(new BigDecimal("2.1"));
+        info.setUserId(13L);
 
         orderInfoMapper.insert(info);
     }

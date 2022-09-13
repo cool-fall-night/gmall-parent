@@ -5,9 +5,9 @@ spring:
   profiles:
     include: sharding  #包含配置文件
   datasource:
-    url: jdbc:mysql://192.168.6.66:3306/gmall_order?useSSL=false&characterEncoding=utf-8
+    url: jdbc:mysql://192.168.6.66:3306/gmall_order?useSSL=false
+    type: com.zaxxer.hikari.HikariDataSource
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
-    type: com.zaxxer.hikari.HikariDataSource
 #自定义配置
