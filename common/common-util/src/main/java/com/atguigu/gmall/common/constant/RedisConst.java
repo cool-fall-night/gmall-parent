@@ -46,4 +46,6 @@ public class RedisConst {
     public static final Integer ITEM_MAX_SIZE = 200;
 
     public static final String ORDER_TEMP_TOKEN = "order:temptoken:";
+
+    public static final String NO_STOCK = "0";
 }

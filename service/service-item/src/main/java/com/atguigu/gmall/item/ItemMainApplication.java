@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
  * @version 1.0
  * @since JDK1.8
  */
-@EnableAutoFeignInterceptor
+
 @EnableAspectJAutoProxy
 @Import(RedissonAutoConfiguration.class)
 @EnableThreadPool

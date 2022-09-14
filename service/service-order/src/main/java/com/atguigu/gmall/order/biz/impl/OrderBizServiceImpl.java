@@ -1,6 +1,8 @@
 package com.atguigu.gmall.order.biz.impl;
 
 import com.atguigu.gmall.common.constant.RedisConst;
+import com.atguigu.gmall.common.execption.GmallException;
+import com.atguigu.gmall.common.result.ResultCodeEnum;
 import com.atguigu.gmall.common.util.AuthContextHolder;
 import com.atguigu.gmall.feign.cart.CartFeignClient;
 import com.atguigu.gmall.feign.product.SkuDetailFeignClient;
@@ -10,6 +12,7 @@ import com.atguigu.gmall.model.cart.CartInfo;
 import com.atguigu.gmall.model.order.OrderDetail;
 import com.atguigu.gmall.model.user.UserAddress;
 import com.atguigu.gmall.model.vo.order.OrderConfirmVo;
+import com.atguigu.gmall.model.vo.order.OrderSubmitVo;
 import com.atguigu.gmall.order.biz.OrderBizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -17,6 +20,7 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -43,6 +47,8 @@ public class OrderBizServiceImpl implements OrderBizService {
     WareFeignClient wareFeignClient;
     @Autowired
     StringRedisTemplate redisTemplate;
+    @Autowired
+
 
     @Override
     public OrderConfirmVo getOrderConfirmData() {
@@ -113,11 +119,12 @@ public class OrderBizServiceImpl implements OrderBizService {
                      "else return 0 " +
                      "end";
 
-        Long execute = redisTemplate.execute(new DefaultRedisScript<Long>(lua),
+        Long execute = redisTemplate.execute(new DefaultRedisScript<>(lua),
                 Arrays.asList(RedisConst.ORDER_TEMP_TOKEN + tradeNo), new String[]{"1"});
 
         if (execute >0){
             //对比成功（令牌正确），删除成功
+            return true;
         }
         /*高并发会出现问题
         String val = redisTemplate.opsForValue().get(RedisConst.ORDER_TEMP_TOKEN + tradeNo);
@@ -127,6 +134,46 @@ public class OrderBizServiceImpl implements OrderBizService {
             return true;
         }*/
         return false;
+    }
+
+    @Override
+    public Long submitOrder(OrderSubmitVo submitVo, String tradeNo) {
+
+        //1、验令牌
+        if (!checkGenerateTradeNo(tradeNo)){
+            throw new GmallException(ResultCodeEnum.TRADE_NO_ERROR);
+        }
+
+        //2、验库存
+        List<String> noStockSkus = new ArrayList<>();
+        submitVo.getOrderDetailList().forEach(orderDetail -> {
+            String hasStock = wareFeignClient.hasStock(orderDetail.getSkuId(), orderDetail.getSkuNum());
+            if (RedisConst.NO_STOCK.equals(hasStock)){
+                noStockSkus.add(orderDetail.getSkuName());
+            }
+        });
+        if (noStockSkus.size() > 0){
+            GmallException gmallException = new GmallException(ResultCodeEnum.NO_STOCK_ERROR);
+            String noStockSkuName = noStockSkus.stream().reduce((s1, s2) -> s1 + " " + s2).get();
+
+            throw new GmallException(gmallException.getMessage() + noStockSkuName,gmallException.getCode());
+        }
+
+
+        //3、验价格
+        submitVo.getOrderDetailList().forEach(orderDetail -> {
+            BigDecimal realPrice = skuDetailFeignClient.getSkuPrice(orderDetail.getSkuId()).getData();
+            BigDecimal orderPrice = orderDetail.getOrderPrice();
+//            BigDecimal subtract = realPrice.subtract(orderPrice);
+            if(!realPrice.equals(orderPrice)){
+                throw new GmallException(ResultCodeEnum.PRICE_ERROR);
+            }
+        });
+
+        //4、检验通过，保存数据
+
+
+        return null;
     }
 
     private OrderDetail makeOrderDetailByCartInfo(CartInfo cartInfo) {
