@@ -47,7 +47,6 @@ public class OrderBizServiceImpl implements OrderBizService {
     WareFeignClient wareFeignClient;
     @Autowired
     StringRedisTemplate redisTemplate;
-    @Autowired
 
 
     @Override

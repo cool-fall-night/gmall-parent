@@ -1,5 +1,6 @@
 package com.atguigu.gmall.order;
 
+import com.atguigu.gmall.common.annotation.EnableAutoExceptionHandler;
 import com.atguigu.gmall.common.annotation.EnableAutoFeignInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +15,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @since JDK1.8
  */
 
+@EnableAutoExceptionHandler
 @EnableAutoFeignInterceptor
 @MapperScan("com.atguigu.gmall.order.mapper")
 @EnableFeignClients(basePackages = {"com.atguigu.gmall.feign.product",
