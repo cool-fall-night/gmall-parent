@@ -25,6 +25,10 @@ public class OrderDetail extends BaseEntity {
     @TableField("sku_id")
     private Long skuId;
 
+    @ApiModelProperty(value = "user_id")
+    @TableField("user_id")
+    private Long userId;
+
     @ApiModelProperty(value = "sku名称（冗余)")
     @TableField("sku_name")
     private String skuName;
@@ -38,7 +42,7 @@ public class OrderDetail extends BaseEntity {
     private BigDecimal orderPrice;
 
     @ApiModelProperty(value = "购买总价格(下单时sku价格）")
-    @TableField("total_order_price")
+    @TableField(exist = false)
     private BigDecimal totalOrderPrice;
 
     @ApiModelProperty(value = "购买个数")

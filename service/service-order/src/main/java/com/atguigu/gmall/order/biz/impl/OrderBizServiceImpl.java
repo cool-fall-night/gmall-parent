@@ -10,10 +10,12 @@ import com.atguigu.gmall.feign.user.UserFeignClient;
 import com.atguigu.gmall.feign.ware.WareFeignClient;
 import com.atguigu.gmall.model.cart.CartInfo;
 import com.atguigu.gmall.model.order.OrderDetail;
+import com.atguigu.gmall.model.order.OrderInfo;
 import com.atguigu.gmall.model.user.UserAddress;
 import com.atguigu.gmall.model.vo.order.OrderConfirmVo;
 import com.atguigu.gmall.model.vo.order.OrderSubmitVo;
 import com.atguigu.gmall.order.biz.OrderBizService;
+import com.atguigu.gmall.order.service.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -48,6 +50,8 @@ public class OrderBizServiceImpl implements OrderBizService {
     WareFeignClient wareFeignClient;
     @Autowired
     StringRedisTemplate redisTemplate;
+    @Autowired
+    OrderInfoService orderInfoService;
 
 
     @Override
@@ -179,9 +183,15 @@ public class OrderBizServiceImpl implements OrderBizService {
         });
 
         //4、检验通过，保存数据
+        Long orderId = orderInfoService.saveOrder(submitVo,tradeNo);
 
+        return orderId;
+    }
 
-        return null;
+    @Override
+    public OrderInfo getOrderInfo(String orderId) {
+
+        return orderInfoService.getById(Long.valueOf(orderId));
     }
 
     private OrderDetail makeOrderDetailByCartInfo(CartInfo cartInfo) {

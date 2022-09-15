@@ -1,20 +1,12 @@
 package com.atguigu.gmall.feign.order;
 
 import com.atguigu.gmall.common.result.Result;
-import com.atguigu.gmall.model.product.SkuImage;
-import com.atguigu.gmall.model.product.SkuInfo;
-import com.atguigu.gmall.model.product.SpuSaleAttr;
-import com.atguigu.gmall.model.to.CategoryTreeTo;
-import com.atguigu.gmall.model.to.CategoryViewTo;
+import com.atguigu.gmall.model.order.OrderInfo;
 import com.atguigu.gmall.model.vo.order.OrderConfirmVo;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.math.BigDecimal;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author 毛伟臣
@@ -34,5 +26,13 @@ public interface OrderFeignClient {
      */
     @GetMapping("/getOrderConfirm/data")
     Result<OrderConfirmVo> getOrderConfirmData();
+
+    /**
+     * 获取订单封装信息
+     * @return
+     * @param orderId
+     */
+    @GetMapping("/getOrderInfo")
+    Result<OrderInfo> getOrderInfo(@RequestParam("orderId") String orderId);
 
 }

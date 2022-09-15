@@ -1,5 +1,6 @@
 package com.atguigu.gmall.order.biz;
 
+import com.atguigu.gmall.model.order.OrderInfo;
 import com.atguigu.gmall.model.vo.order.OrderConfirmVo;
 import com.atguigu.gmall.model.vo.order.OrderSubmitVo;
 
@@ -39,4 +40,7 @@ public interface OrderBizService {
      * @return
      */
     Long submitOrder(OrderSubmitVo submitVo, String tradeNo);
+
+
+    OrderInfo getOrderInfo(String orderId);
 }

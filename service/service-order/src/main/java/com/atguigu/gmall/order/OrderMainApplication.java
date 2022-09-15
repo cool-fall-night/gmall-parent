@@ -6,6 +6,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author 毛伟臣
@@ -15,6 +16,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @since JDK1.8
  */
 
+@EnableTransactionManagement
 @EnableAutoExceptionHandler
 @EnableAutoFeignInterceptor
 @MapperScan("com.atguigu.gmall.order.mapper")

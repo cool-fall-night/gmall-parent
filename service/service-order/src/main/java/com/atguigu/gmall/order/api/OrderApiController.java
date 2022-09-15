@@ -1,6 +1,7 @@
 package com.atguigu.gmall.order.api;
 
 import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.model.order.OrderInfo;
 import com.atguigu.gmall.model.vo.order.OrderConfirmVo;
 import com.atguigu.gmall.order.biz.OrderBizService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,14 @@ public class OrderApiController {
         OrderConfirmVo data = orderBizService.getOrderConfirmData();
 
         return Result.ok(data);
+    }
+
+    @GetMapping("/getOrderInfo")
+    Result<OrderInfo> getOrderInfo(String orderId){
+
+        OrderInfo orderInfo = orderBizService.getOrderInfo(orderId);
+
+        return Result.ok(orderInfo);
     }
 
 }

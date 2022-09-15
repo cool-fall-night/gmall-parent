@@ -29,7 +29,7 @@ public class OrderRestController {
 
         Long orderId = orderBizService.submitOrder(submitVo,tradeNo);
 
-        return Result.ok(orderId);
+        return Result.ok(orderId.toString());
     }
 }
 

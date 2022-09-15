@@ -48,4 +48,8 @@ public class RedisConst {
     public static final String ORDER_TEMP_TOKEN = "order:temptoken:";
 
     public static final String NO_STOCK = "0";
+
+    public static final long EXPIRE_TIME = 30*60*1000;
+
+    public static final long REFUNDABLE_TIME = 7*24*60*60*1000;
 }
