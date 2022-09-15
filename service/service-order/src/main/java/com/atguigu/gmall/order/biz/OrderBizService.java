@@ -43,4 +43,7 @@ public interface OrderBizService {
 
 
     OrderInfo getOrderInfo(String orderId);
+
+
+    void closeOrder(Long orderId, Long userId);
 }

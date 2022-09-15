@@ -2,15 +2,19 @@ package com.atguigu.gmall.order.service.impl;
 
 import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.common.util.AuthContextHolder;
+import com.atguigu.gmall.common.util.Jsons;
+import com.atguigu.gmall.constant.MqConst;
 import com.atguigu.gmall.model.enums.OrderStatus;
 import com.atguigu.gmall.model.enums.ProcessStatus;
 import com.atguigu.gmall.model.order.OrderDetail;
 import com.atguigu.gmall.model.order.OrderInfo;
+import com.atguigu.gmall.model.to.mq.OrderMsg;
 import com.atguigu.gmall.model.vo.order.OrderSubmitVo;
 import com.atguigu.gmall.order.mapper.OrderInfoMapper;
 import com.atguigu.gmall.order.service.OrderDetailService;
 import com.atguigu.gmall.order.service.OrderInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * @author 毛伟臣
@@ -32,7 +37,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     OrderInfoMapper orderInfoMapper;
     @Autowired
     OrderDetailService orderDetailService;
-
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     @Override
     @Transactional
@@ -47,7 +53,21 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
         orderDetailService.saveBatch(orderDetailList);
 
+        OrderMsg orderMsg = new OrderMsg(orderInfo.getId(), orderInfo.getUserId());
+
+        rabbitTemplate.convertAndSend(MqConst.EXCHANGE_ORDER_EVENT,MqConst.RK_ORDER_CREATED, Jsons.toJsonStr(orderMsg));
+
         return orderInfo.getId();
+    }
+
+    @Override
+    public void changeOrderStatus(Long orderId, Long userId, ProcessStatus closed, List<ProcessStatus> expected) {
+
+        String orderStatus = closed.getOrderStatus().name();
+        String processStatus = closed.name();
+        List<String> expectedStatus = expected.stream().map(status -> status.name()).collect(Collectors.toList());
+
+        orderInfoMapper.updateOrderStatus(orderId,userId,orderStatus,processStatus,expectedStatus);
     }
 
     private List<OrderDetail> prepareOrderDetailList(OrderSubmitVo submitVo, OrderInfo orderInfo) {

@@ -4,19 +4,24 @@ import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.common.execption.GmallException;
 import com.atguigu.gmall.common.result.ResultCodeEnum;
 import com.atguigu.gmall.common.util.AuthContextHolder;
+import com.atguigu.gmall.common.util.Jsons;
+import com.atguigu.gmall.constant.MqConst;
 import com.atguigu.gmall.feign.cart.CartFeignClient;
 import com.atguigu.gmall.feign.product.SkuDetailFeignClient;
 import com.atguigu.gmall.feign.user.UserFeignClient;
 import com.atguigu.gmall.feign.ware.WareFeignClient;
 import com.atguigu.gmall.model.cart.CartInfo;
+import com.atguigu.gmall.model.enums.ProcessStatus;
 import com.atguigu.gmall.model.order.OrderDetail;
 import com.atguigu.gmall.model.order.OrderInfo;
+import com.atguigu.gmall.model.to.mq.OrderMsg;
 import com.atguigu.gmall.model.user.UserAddress;
 import com.atguigu.gmall.model.vo.order.OrderConfirmVo;
 import com.atguigu.gmall.model.vo.order.OrderSubmitVo;
 import com.atguigu.gmall.order.biz.OrderBizService;
 import com.atguigu.gmall.order.service.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -52,7 +57,6 @@ public class OrderBizServiceImpl implements OrderBizService {
     StringRedisTemplate redisTemplate;
     @Autowired
     OrderInfoService orderInfoService;
-
 
     @Override
     public OrderConfirmVo getOrderConfirmData() {
@@ -185,6 +189,11 @@ public class OrderBizServiceImpl implements OrderBizService {
         //4、检验通过，保存数据
         Long orderId = orderInfoService.saveOrder(submitVo,tradeNo);
 
+        //保存后删除购物车内选定的商品
+        cartFeignClient.deleteChecked();
+        //30分钟后未支付，关闭订单（mq消息队列 ）
+
+
         return orderId;
     }
 
@@ -192,6 +201,21 @@ public class OrderBizServiceImpl implements OrderBizService {
     public OrderInfo getOrderInfo(String orderId) {
 
         return orderInfoService.getById(Long.valueOf(orderId));
+    }
+
+    /**
+     * 关闭订单
+     * @param orderId
+     * @param userId
+     */
+    @Override
+    public void closeOrder(Long orderId, Long userId) {
+
+        ProcessStatus closed = ProcessStatus.CLOSED;
+        List<ProcessStatus> expected = Arrays.asList(ProcessStatus.UNPAID,ProcessStatus.FINISHED);
+
+        orderInfoService.changeOrderStatus(orderId,userId,closed,expected);
+
     }
 
     private OrderDetail makeOrderDetailByCartInfo(CartInfo cartInfo) {

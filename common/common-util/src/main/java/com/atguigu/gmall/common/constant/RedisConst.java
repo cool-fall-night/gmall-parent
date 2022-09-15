@@ -52,4 +52,6 @@ public class RedisConst {
     public static final long EXPIRE_TIME = 30*60*1000;
 
     public static final long REFUNDABLE_TIME = 7*24*60*60*1000;
+
+    public static final String MQ_RETRY = "mq:message:";
 }

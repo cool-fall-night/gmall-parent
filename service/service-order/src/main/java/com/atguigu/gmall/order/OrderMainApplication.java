@@ -1,5 +1,6 @@
 package com.atguigu.gmall.order;
 
+import com.atguigu.gmall.annotation.EnableAppRabbit;
 import com.atguigu.gmall.common.annotation.EnableAutoExceptionHandler;
 import com.atguigu.gmall.common.annotation.EnableAutoFeignInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @since JDK1.8
  */
 
+@EnableAppRabbit
 @EnableTransactionManagement
 @EnableAutoExceptionHandler
 @EnableAutoFeignInterceptor
