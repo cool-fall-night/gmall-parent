@@ -14,6 +14,7 @@ import com.atguigu.gmall.model.user.UserAddress;
 import com.atguigu.gmall.model.vo.order.OrderConfirmVo;
 import com.atguigu.gmall.model.vo.order.OrderSubmitVo;
 import com.atguigu.gmall.order.biz.OrderBizService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @since JDK1.8
  */
-
+@Slf4j
 @Service
 public class OrderBizServiceImpl implements OrderBizService {
 
@@ -113,16 +114,24 @@ public class OrderBizServiceImpl implements OrderBizService {
     @Override
     public boolean checkGenerateTradeNo(String tradeNo){
 
-        String lua = "if redis.call(\"get\",KEYS[1]) == ARGV[1] " +
+        String lua1 = "if redis.call(\"get\",KEYS[1]) == ARGV[1] " +
                      "then return redis.call(\"del\",KEYS[1]) " +
                      "else return 0 " +
                      "end";
 
-        Long execute = redisTemplate.execute(new DefaultRedisScript<>(lua),
+        //1、先看有没有，如果有就是正确令牌, 1, 0 。脚本校验令牌
+        String lua = "if redis.call(\"get\",KEYS[1]) == ARGV[1] then " +
+                "    return redis.call(\"del\",KEYS[1]) " +
+                "else " +
+                "    return 0 " +
+                "end";
+
+        Long execute = redisTemplate.execute(new DefaultRedisScript<Long>(lua,Long.class),
                 Arrays.asList(RedisConst.ORDER_TEMP_TOKEN + tradeNo), new String[]{"1"});
 
         if (execute >0){
             //对比成功（令牌正确），删除成功
+            log.info("令牌验证成功");
             return true;
         }
         /*高并发会出现问题
@@ -152,10 +161,10 @@ public class OrderBizServiceImpl implements OrderBizService {
             }
         });
         if (noStockSkus.size() > 0){
-            GmallException gmallException = new GmallException(ResultCodeEnum.NO_STOCK_ERROR);
+
             String noStockSkuName = noStockSkus.stream().reduce((s1, s2) -> s1 + " " + s2).get();
 
-            throw new GmallException(gmallException.getMessage() + noStockSkuName,gmallException.getCode());
+            throw new GmallException(noStockSkuName + ResultCodeEnum.NO_STOCK_ERROR.getMessage(),ResultCodeEnum.NO_STOCK_ERROR.getCode());
         }
 
 

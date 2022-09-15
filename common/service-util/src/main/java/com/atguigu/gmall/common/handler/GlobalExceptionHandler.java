@@ -7,11 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/**
- * 全局异常处理类
- *
- */
-@ResponseBody
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -23,14 +19,16 @@ public class GlobalExceptionHandler {
 
     /**
      * 自定义异常处理方法
-     * @param e
+     * @param
      * @return
      */
     @ExceptionHandler(GmallException.class)
-    public Result handlerGmallException(GmallException gmallException){
+    @ResponseBody
+    public Result error(GmallException gmallException){
+        Result<Object> fail = Result.fail();
+        fail.setCode(gmallException.getCode());
+        fail.setMessage(gmallException.getMessage());
+        return fail;
 
-        ResultCodeEnum codeEnum = gmallException.getCodeEnum();
-
-        return Result.build("",codeEnum);
     }
 }
