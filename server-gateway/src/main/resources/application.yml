@@ -32,6 +32,11 @@ spring:
           predicates:
             - Path=/admin/product/**  # 路径断言：
 
+        - id: incr_route
+          uri: lb://service-item
+          predicates:
+            - Path=/lock/incr # 路径断言：
+
         - id: user_route
           uri: lb://service-user
           predicates:
@@ -42,10 +47,15 @@ spring:
           predicates:
             - Path=/api/cart/**  # 路径断言：
 
+        - id: order_router
+          uri: lb://service-order
+          predicates:
+            - Path=/api/order/** # 路径断言：
+
         - id: web_all_route
           uri: lb://web-all
           predicates:
-          - Host=**.gmall.com  # Host断言：
+            - Host=**.gmall.com  # Host断言：
 
 app:
   auth:
@@ -55,10 +65,12 @@ app:
       - /js/**
       - /login.html
       - /api/user/passport/login
+
     login-auth-url:
       - /api/**/auth/**
       - /trade.html
 
     deny-auth-url:
       - /api/inner/rpc/**
+
     login-page: http://passport.gmall.com/login.html
