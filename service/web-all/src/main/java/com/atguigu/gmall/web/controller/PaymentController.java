@@ -39,4 +39,12 @@ public class PaymentController {
 
         return "payment/pay";
     }
+
+    @GetMapping("/pay/success.html")
+    public String paySuccess(){
+
+        return "payment/success";
+    }
+
+
 }

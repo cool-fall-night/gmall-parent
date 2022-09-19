@@ -35,6 +35,12 @@ public class DateUtil {
 
     }
 
+    public static String formatDate(Date date,String dateFormat) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        return sdf.format(date);
+
+    }
+
     /**
      * 截取比较断两个日期对象的field处的值 。
      * 如果第一个日期小于、等于、大于第二个，则对应返回负整数、0、正整数
